@@ -8,8 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <?php wp_head(); ?>
   </head>
-  <body <?php body_class(); ?>>
-    <div class="bg-white">
+  <body <?php body_class(); ?> >
+    <div class="bg-white pl-[135px]">
       <nav class="bg-white shadow-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="flex justify-between h-16">
