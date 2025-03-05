@@ -11,7 +11,7 @@
   <body <?php body_class(); ?>>
     <div class="bg-white">
       <div class="max-w-4xl mx-auto mb-5 px-4 flex justify-between items-center">
-        <div class="text-xl sm:text-3xl py-10"><a href="<?php echo get_home_url(); ?>" class="hover:text-teal-600">
+        <div class="size-16"><a href="<?php echo get_home_url(); ?>" class="">
           <img src="<?php echo esc_url( get_parent_theme_file_uri( 'assets/images/logo.png' ) ); ?>" alt="">
         </a></div>
         <div class="text-xl sm:text-3xl py-10"><a href="<?php echo get_home_url(); ?>" class="hover:text-teal-600">Enat banko</a></div>
