@@ -14,7 +14,7 @@
         <div class="size-16"><a href="<?php echo get_home_url(); ?>" class="">
           <img src="<?php echo esc_url( get_parent_theme_file_uri( 'assets/images/logo.png' ) ); ?>" alt="">
         </a></div>
-        <div class="text-xl sm:text-3xl py-10"><a href="<?php echo get_home_url(); ?>" class="hover:text-teal-600">Enat banko</a></div>
-        <div class="text-xl sm:text-3xl py-10"><a href="<?php echo get_home_url(); ?>" class="hover:text-teal-600">Enat banko</a></div>
+        <div class="text-xl sm:text-3xl"><a href="<?php echo get_home_url(); ?>" class="hover:text-teal-600">Enat banko</a></div>
+        <div class="text-xl sm:text-3xl "><a href="<?php echo get_home_url(); ?>" class="hover:text-teal-600">Enat banko</a></div>
       </div>
     </div>
