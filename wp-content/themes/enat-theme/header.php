@@ -15,7 +15,7 @@
           <div class="flex justify-between h-16">
         <div class="flex-shrink-0 flex items-center">
           <a href="<?php echo get_home_url(); ?>">
-            <img class="h-8 w-auto" src="<?php echo esc_url( get_parent_theme_file_uri( 'assets/images/logo.png' ) ); ?>" alt="Logo">
+            <img class="h-6 w-6" src="<?php echo esc_url( get_parent_theme_file_uri( 'assets/images/logo.png' ) ); ?>" alt="Logo" style="width: 109px; height: 53px;">
           </a>
         </div>
         <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
