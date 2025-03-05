@@ -10,11 +10,19 @@
   </head>
   <body <?php body_class(); ?>>
     <div class="bg-white">
-      <div class="max-w-4xl mx-auto mb-5 px-4 flex justify-between items-center">
-        <div class="size-16"><a href="<?php echo get_home_url(); ?>" class="">
-          <img src="<?php echo esc_url( get_parent_theme_file_uri( 'assets/images/logo.png' ) ); ?>" alt="">
-        </a></div>
-        <div class="text-xl sm:text-3xl"><a href="<?php echo get_home_url(); ?>" class="hover:text-teal-600">Enat banko</a></div>
-        <div class="text-xl sm:text-3xl "><a href="<?php echo get_home_url(); ?>" class="hover:text-teal-600">Enat banko</a></div>
-      </div>
+      <nav class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex justify-between h-16">
+        <div class="flex-shrink-0 flex items-center">
+          <a href="<?php echo get_home_url(); ?>">
+            <img class="h-8 w-auto" src="<?php echo esc_url( get_parent_theme_file_uri( 'assets/images/logo.png' ) ); ?>" alt="Logo">
+          </a>
+        </div>
+        <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+          <a href="<?php echo get_home_url(); ?>" class="text-gray-900 hover:text-teal-600 inline-flex items-center px-1 pt-1 text-sm font-medium">Enat banko</a>
+          <a href="<?php echo get_home_url(); ?>" class="text-gray-900 hover:text-teal-600 inline-flex items-center px-1 pt-1 text-sm font-medium">Enat banko</a>
+        </div>
+          </div>
+        </div>
+      </nav>
     </div>
