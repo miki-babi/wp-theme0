@@ -11,6 +11,9 @@ get_header(); ?>
         <div>
           <h3><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
           <?php echo wp_trim_words(get_the_content(), 40, '...') ?>
+          <div>
+            <?php the_content(); ?>
+          </div>
         </div>
       <?php }
     } ?>
