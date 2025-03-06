@@ -222,17 +222,7 @@ footer {
 
 
   </style>
-  <script>
-    document.getElementById('search-icon').addEventListener('click', function() {
-    var searchFormContainer = document.getElementById('search-form-container');
-    if (searchFormContainer.style.display === 'none' || searchFormContainer.style.display === '') {
-        searchFormContainer.style.display = 'block';
-    } else {
-        searchFormContainer.style.display = 'none';
-    }
-});
-
-  </script>
+  
 <div class="navbar">
     <a href="<?php echo home_url(); ?>">
         <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/logo.png'); ?>" alt="Logo" class="logo">
