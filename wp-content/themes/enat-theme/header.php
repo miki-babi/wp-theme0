@@ -101,6 +101,11 @@
         <li><a href="<?php echo home_url('/careers'); ?>">Careers</a></li>
         <li><a href="<?php echo home_url('/contact-us'); ?>">Contact Us</a></li>
     </ul>
+    <a href="#" class="search-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 96 960 960" width="24">
+        <path d="M796 936 536 676q-29 24-64.5 36.5T400 725q-100 0-170-70t-70-170q0-100 70-170t170-70q100 0 170 70t70 170q0 35-12.5 70.5T676 676l260 260-140 140ZM400 625q66 0 113-47t47-113q0-66-47-113t-113-47q-66 0-113 47t-47 113q0 66 47 113t113 47Z"/>
+      </svg>
+    </a>
 
     <a href="<?php echo home_url('/contact-us'); ?>" class="contact-btn">Contact</a>
 </div>
