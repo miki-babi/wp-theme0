@@ -20,7 +20,7 @@
               <img class="h-6 w-6" src="<?php echo esc_url(get_parent_theme_file_uri('assets/images/logo.png')); ?>" alt="Logo" style="width: 109px; height: 53px;">
             </a>
             </div>
-            <div class="flex justify-between w-full align-middle">
+            <div class="flex justify-between w-full align-middle" style="align-items: center;">
             <div class="hidden sm:ml-6 sm:flex sm:space-x-8" >
               <a href="<?php echo get_home_url(); ?>" class="text-gray-900 hover:text-teal-600 inline-flex items-center px-1 pt-1 text-sm font-medium">Home</a>
               <a href="<?php echo get_home_url(); ?>/about-us" class="text-gray-900 hover:text-teal-600 inline-flex items-center px-1 pt-1 text-sm font-medium">About Us</a>
