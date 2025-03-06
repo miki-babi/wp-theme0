@@ -94,12 +94,12 @@
     </a>
 
     <ul class="nav-links">
-        <li><a href="<?php echo home_url(); ?>">Home</a></li>
-        <li><a href="<?php echo home_url('/about-us'); ?>">About Us</a></li>
-        <li><a href="<?php echo home_url('/services'); ?>">Services</a></li>
-        <li><a href="<?php echo home_url('/resources'); ?>">Resources</a></li>
-        <li><a href="<?php echo home_url('/careers'); ?>">Careers</a></li>
-        <li><a href="<?php echo home_url('/contact-us'); ?>">Contact Us</a></li>
+        <li><a href="<?php echo home_url(); ?>" style="font-family: 'Inter', sans-serif; font-weight: 600; font-size: 12px; line-height: 20px; letter-spacing: 2px; text-transform: uppercase;">Home</a></li>
+        <li><a href="<?php echo home_url('/about-us'); ?>" style="font-family: 'Inter', sans-serif; font-weight: 600; font-size: 12px; line-height: 20px; letter-spacing: 2px; text-transform: uppercase;">About Us</a></li>
+        <li><a href="<?php echo home_url('/services'); ?>" style="font-family: 'Inter', sans-serif; font-weight: 600; font-size: 12px; line-height: 20px; letter-spacing: 2px; text-transform: uppercase;">Services</a></li>
+        <li><a href="<?php echo home_url('/resources'); ?>" style="font-family: 'Inter', sans-serif; font-weight: 600; font-size: 12px; line-height: 20px; letter-spacing: 2px; text-transform: uppercase;">Resources</a></li>
+        <li><a href="<?php echo home_url('/careers'); ?>" style="font-family: 'Inter', sans-serif; font-weight: 600; font-size: 12px; line-height: 20px; letter-spacing: 2px; text-transform: uppercase;">Careers</a></li>
+        <li><a href="<?php echo home_url('/contact-us'); ?>" style="font-family: 'Inter', sans-serif; font-weight: 600; font-size: 12px; line-height: 20px; letter-spacing: 2px; text-transform: uppercase;">Contact Us</a></li>
     </ul>
     <a href="#" class="search-icon">
     <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
