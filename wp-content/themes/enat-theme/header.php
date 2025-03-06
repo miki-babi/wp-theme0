@@ -34,7 +34,7 @@
               </svg>
             </div>
             </div>
-          <div class="flex items-center">
+          <div class="flex items-center  sm:hidden">
             <!-- <a href="#" class="text-gray-900 hover:text-teal-600 inline-flex items-center px-1 pt-1 text-sm font-medium"> -->
                 <div style="background-color: #ED1E26; color: white; padding: 10px 20px; border-radius: 5px;">
                  Contact Us
