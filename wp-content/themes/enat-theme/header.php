@@ -21,7 +21,7 @@
             </a>
             </div>
             <div class="flex justify-between w-full align-middle">
-            <div class="hidden sm:ml-6 sm:flex sm:space-x-8" style="display: none; margin-left: 1.5rem; flex-direction: row; gap: 2rem;">
+            <div class="hidden sm:ml-6 sm:flex sm:space-x-8" >
               <a href="<?php echo get_home_url(); ?>" class="text-gray-900 hover:text-teal-600 inline-flex items-center px-1 pt-1 text-sm font-medium">Home</a>
               <a href="<?php echo get_home_url(); ?>/about-us" class="text-gray-900 hover:text-teal-600 inline-flex items-center px-1 pt-1 text-sm font-medium">About Us</a>
               <a href="<?php echo get_home_url(); ?>/services" class="text-gray-900 hover:text-teal-600 inline-flex items-center px-1 pt-1 text-sm font-medium">Services</a>
