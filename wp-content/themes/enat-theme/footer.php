@@ -13,7 +13,7 @@
             <h3>About the company</h3>
             <p>Empowering communities and supporting financial growth with innovative banking solutions tailored to your needs.</p>
             <div class="social-icons">
-                <a href="#"><img src="<?php echo esc_url(get_template_directory_uri() . '/assets/icons/facebook.svg'); ?>" alt="Facebook"></a>
+                <a href="#"><img src="<?php echo get_template_directory_uri(); ?>/assets/icons/facebook.svg" alt="Facebook"></a>
                 <a href="#"><img src="<?php echo get_template_directory_uri(); ?>/assets/icons/youtube.svg" alt="YouTube"></a>
                 <a href="#"><img src="<?php echo get_template_directory_uri(); ?>/assets/icons/linkedin.svg" alt="LinkedIn"></a>
                 <a href="#"><img src="<?php echo get_template_directory_uri(); ?>/assets/icons/instagram.svg" alt="Instagram"></a>
