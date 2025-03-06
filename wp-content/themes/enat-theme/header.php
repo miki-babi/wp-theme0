@@ -11,7 +11,7 @@
 </head>
 
 <body <?php body_class(); ?>>
-  <div class="bg-white pl-[135px]">
+  <div class="bg-white pl-[135px]" style="padding-left: 135px;">
     <nav class="bg-white shadow-md">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
