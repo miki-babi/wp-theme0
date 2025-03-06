@@ -36,9 +36,9 @@
             </div>
           <div class="flex items-center">
             <!-- <a href="#" class="text-gray-900 hover:text-teal-600 inline-flex items-center px-1 pt-1 text-sm font-medium"> -->
-              <div class="bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700">
+              <div class="bg-[#ED1E26] text-white">
                 Contact Us
-</div>
+              </div>
             <!-- </a> -->
           </div>
         </div>
