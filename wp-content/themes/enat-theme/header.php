@@ -219,8 +219,47 @@ footer {
     }
 }
 
+.search-container {
+    position: relative;
+}
+
+.search-form-container {
+    position: absolute;
+    top: 40px;  /* Adjust based on where you want the search form */
+    left: 0;
+    right: 0;
+    background-color: white;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    display: none;
+}
+
+.search-form-container .search-form {
+    display: flex;
+}
+
+.search-form-container .search-form input[type="search"] {
+    width: 100%;
+    padding: 5px;
+}
+
+.search-form-container .search-form button {
+    padding: 5px;
+    cursor: pointer;
+}
 
   </style>
+  <script>
+    document.getElementById('search-icon').addEventListener('click', function() {
+    var searchFormContainer = document.getElementById('search-form-container');
+    if (searchFormContainer.style.display === 'none' || searchFormContainer.style.display === '') {
+        searchFormContainer.style.display = 'block';
+    } else {
+        searchFormContainer.style.display = 'none';
+    }
+});
+
+  </script>
 <div class="navbar">
     <a href="<?php echo home_url(); ?>">
         <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/logo.png'); ?>" alt="Logo" class="logo">
@@ -234,13 +273,20 @@ footer {
         <li><a href="<?php echo home_url('/careers'); ?>" style="font-family: 'Inter', sans-serif; font-weight: 600; font-size: 12px; line-height: 20px; letter-spacing: 2px; text-transform: uppercase;">Careers</a></li>
         <li><a href="<?php echo home_url('/contact-us'); ?>" style="font-family: 'Inter', sans-serif; font-weight: 600; font-size: 12px; line-height: 20px; letter-spacing: 2px; text-transform: uppercase;">Contact Us</a></li>
     </ul>
-    <a href="#" class="search-icon">
-    <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M22.2099 20.79L18.4999 17.11C19.94 15.3144 20.6374 13.0353 20.4487 10.7413C20.26 8.4473 19.1996 6.31278 17.4854 4.77664C15.7713 3.2405 13.5337 2.41951 11.2328 2.48247C8.93194 2.54543 6.74263 3.48756 5.11505 5.11514C3.48747 6.74272 2.54534 8.93203 2.48237 11.2329C2.41941 13.5338 3.24041 15.7714 4.77655 17.4855C6.31269 19.1997 8.44721 20.2601 10.7412 20.4488C13.0352 20.6375 15.3143 19.9401 17.1099 18.5L20.7899 22.18C20.8829 22.2737 20.9935 22.3481 21.1153 22.3989C21.2372 22.4497 21.3679 22.4758 21.4999 22.4758C21.6319 22.4758 21.7626 22.4497 21.8845 22.3989C22.0063 22.3481 22.1169 22.2737 22.2099 22.18C22.3901 21.9935 22.4909 21.7443 22.4909 21.485C22.4909 21.2257 22.3901 20.9765 22.2099 20.79ZM11.4999 18.5C10.1154 18.5 8.76206 18.0895 7.61091 17.3203C6.45977 16.5511 5.56256 15.4579 5.03275 14.1788C4.50293 12.8997 4.36431 11.4922 4.63441 10.1344C4.9045 8.7765 5.57119 7.52922 6.55016 6.55025C7.52912 5.57128 8.77641 4.9046 10.1343 4.6345C11.4921 4.3644 12.8996 4.50303 14.1787 5.03284C15.4578 5.56265 16.551 6.45986 17.3202 7.611C18.0894 8.76215 18.4999 10.1155 18.4999 11.5C18.4999 13.3565 17.7624 15.137 16.4497 16.4497C15.1369 17.7625 13.3564 18.5 11.4999 18.5Z" fill="#ED1E26"/>
-</svg>
-<?php get_search_form(); ?>
+    <div class="search-container">
+    <!-- SVG Search Icon -->
+    <button id="search-icon" class="search-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="search-icon-svg">
+            <path fill-rule="evenodd" d="M15.743 13.257a8 8 0 1 0-1.486 1.486l4.743 4.743a1 1 0 0 0 1.414-1.414l-4.743-4.743zM16 8a7 7 0 1 1-14 0 7 7 0 0 1 14 0z" clip-rule="evenodd"/>
+        </svg>
+    </button>
 
-    </a>
+    <!-- Hidden Search Form -->
+    <div id="search-form-container" class="search-form-container" style="display: none;">
+        <?php get_search_form(); ?>
+    </div>
+</div>
+
 
     <a href="<?php echo home_url('/contact-us'); ?>" class="contact-btn">Contact</a>
 </div>
