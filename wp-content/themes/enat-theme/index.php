@@ -9,13 +9,17 @@ get_header(); ?>
 
   <div class="prose max-w-full">
     <?php
-  
-
-// Load page-home.php if the current page is the front page
-if (is_front_page()) {
-  include get_template_directory() . '/page-home.php';
-}
-?>
+    // Redirect to /home or /contact based on conditions
+    if (is_front_page()) {
+      wp_redirect(home_url('/home'));
+      exit;
+    } elseif (is_page('contact')) {
+      wp_redirect(home_url('/contact'));
+      exit;
+    } else {
+      // Default fallback
+      include get_template_directory() . '/page-default.php';
+    }?>
   </div>
 </div>
 
