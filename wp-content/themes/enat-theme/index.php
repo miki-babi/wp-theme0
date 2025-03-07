@@ -8,18 +8,13 @@ get_header(); ?>
   </script>
 
   <div class="prose max-w-full">
-    <?php if (have_posts()) {
-      while(have_posts()) {
-        the_post(); ?>
-        <div>
-          <h3><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
-          <?php echo wp_trim_words(get_the_content(), 40, '...') ?>
-          <div>
-            <?php the_content(); ?>
-          </div>
-        </div>
-      <?php }
-    } ?>
+    <?php
+  if (is_front_page()) { 
+    get_template_part('template-parts/page', 'home');
+} else {
+    get_template_part('template-parts/page', 'default');
+}
+?>
   </div>
 </div>
 
