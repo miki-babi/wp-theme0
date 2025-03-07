@@ -15,12 +15,7 @@ get_header(); ?>
             <p>This is a simple home page template for your WordPress theme.</p>
         </section>
 
-        <section class="home-content">
-            <?php
-            // Display the content of the page.
-            the_content();
-            ?>
-        </section>
+    
 
     </main><!-- #main -->
 </div><!-- #primary -->
