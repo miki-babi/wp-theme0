@@ -9,7 +9,7 @@ get_header(); ?>
 
   <div class="prose max-w-full">
     <?php
-  if (is_front_page()) { 
+  if (is_page("home")) { 
     get_template_part('template-parts/page', 'home');
 } else {
     get_template_part('template-parts/page', 'default');
