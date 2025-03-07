@@ -11,7 +11,7 @@ get_header(); ?>
         <?php
         // Start the loop.
         while ( have_posts() ) :
-            the_post();
+            // the_post();
             // Include the page content template.
             get_template_part( 'template-parts/page', 'home' );
             the_content();
