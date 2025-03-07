@@ -4,7 +4,7 @@ get_header(); ?>
 
 <div class="max-w-4xl mx-auto px-4">
   <script>
-    alert('Hello, World!');
+    console.log('Hello, World!');
   </script>
 
   <div class="prose max-w-full">
