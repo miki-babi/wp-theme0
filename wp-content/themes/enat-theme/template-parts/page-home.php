@@ -11,11 +11,8 @@
 
         <section class="home-intro">
             <h1>Welcome to Our Website</h1>
-            <p>This is a simple home page template for your WordPress theme.</p>
+            <p>This is a simple home page template</p>
         </section>
-
-    
-
     </main><!-- #main -->
 </div><!-- #primary -->
 
