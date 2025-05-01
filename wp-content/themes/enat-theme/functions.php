@@ -17,3 +17,5 @@ function boilerplate_add_support() {
 }
 
 add_action('after_setup_theme', 'boilerplate_add_support');
+
+register_nav_menu('main-menu', 'Main Menu');
