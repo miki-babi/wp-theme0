@@ -5,6 +5,7 @@ get_header(); ?>
 <div class="max-w-4xl mx-auto px-4">
 
   <div class="prose max-w-full">
+    <h1 class="text-3xl font-bold mb-4">Welcome to Enat Bank</h1>
     <?php if (have_posts()) {
       while(have_posts()) {
         the_post(); ?>
