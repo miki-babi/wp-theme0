@@ -8,9 +8,7 @@ get_header();
         the_content();
     endwhile;
     ?>
- <h1>
-    hellloooo 
- </h1>
+
 </div>
 
 <?php
