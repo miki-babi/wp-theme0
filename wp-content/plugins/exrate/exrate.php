@@ -14,24 +14,151 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly.
 }
 
-function exrate_shortcode() {
-    // Example exchange rates data
-    $rates = [
-        ['Currency' => 'USD', 'Rate' => '54.00'],
-        ['Currency' => 'EUR', 'Rate' => '58.00'],
-        ['Currency' => 'GBP', 'Rate' => '67.00'],
-    ];
 
-    ob_start();
-    echo '<table border="1" cellpadding="5" cellspacing="0">';
-    echo '<tr><th>Currency</th><th>Rate</th></tr>';
-    foreach ($rates as $rate) {
-        echo '<tr>';
-        echo '<td>' . esc_html($rate['Currency']) . '</td>';
-        echo '<td>' . esc_html($rate['Rate']) . '</td>';
-        echo '</tr>';
+// Register CPT
+add_action('init', function() {
+    register_post_type('currency', [
+        'label' => 'Currencies',
+        'public' => true,
+        'supports' => ['title', 'thumbnail'],
+        'show_in_rest' => true,
+    ]);
+});
+
+// Create custom table for price history on plugin activation
+register_activation_hook(__FILE__, function() {
+    global $wpdb;
+    $table = $wpdb->prefix . 'currency_price_history';
+    $charset_collate = $wpdb->get_charset_collate();
+
+    $sql = "CREATE TABLE IF NOT EXISTS $table (
+        id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+        currency_id BIGINT UNSIGNED NOT NULL,
+        cash_buy DECIMAL(10,2),
+        cash_sell DECIMAL(10,2),
+        transactional_buy DECIMAL(10,2),
+        transactional_sell DECIMAL(10,2),
+        recorded_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (id),
+        INDEX (currency_id)
+    ) $charset_collate;";
+
+    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+    dbDelta($sql);
+});
+
+// Save price history on currency save
+add_action('save_post_currency', function($post_id) {
+    if (wp_is_post_autosave($post_id) || wp_is_post_revision($post_id)) return;
+
+    global $wpdb;
+    $table = $wpdb->prefix . 'currency_price_history';
+
+    $cash_buy = get_post_meta($post_id, 'cash_buy', true);
+    $cash_sell = get_post_meta($post_id, 'cash_sell', true);
+    $transactional_buy = get_post_meta($post_id, 'transactional_buy', true);
+    $transactional_sell = get_post_meta($post_id, 'transactional_sell', true);
+
+    // Only insert if values exist
+    if ($cash_buy !== '' && $cash_sell !== '' && $transactional_buy !== '' && $transactional_sell !== '') {
+        $wpdb->insert($table, [
+            'currency_id' => $post_id,
+            'cash_buy' => $cash_buy,
+            'cash_sell' => $cash_sell,
+            'transactional_buy' => $transactional_buy,
+            'transactional_sell' => $transactional_sell,
+            'recorded_at' => current_time('mysql'),
+        ]);
     }
-    echo '</table>';
-    return ob_get_clean();
-}
-add_shortcode('exrate_table', 'exrate_shortcode');
+});
+
+// Add meta boxes for rates
+add_action('add_meta_boxes', function() {
+    add_meta_box('currency_rates', 'Currency Rates', function($post) {
+        $fields = [
+            'cash_buy' => 'Cash Buy',
+            'cash_sell' => 'Cash Sell',
+            'transactional_buy' => 'Transactional Buy',
+            'transactional_sell' => 'Transactional Sell',
+        ];
+        foreach ($fields as $key => $label) {
+            $value = get_post_meta($post->ID, $key, true);
+            echo '<p><label>' . esc_html($label) . ': <input type="number" step="0.01" name="' . esc_attr($key) . '" value="' . esc_attr($value) . '" style="width:100px;"></label></p>';
+        }
+    }, 'currency', 'normal', 'default');
+});
+
+// Save meta box data
+add_action('save_post_currency', function($post_id) {
+    if (wp_is_post_autosave($post_id) || wp_is_post_revision($post_id)) return;
+    $fields = ['cash_buy', 'cash_sell', 'transactional_buy', 'transactional_sell'];
+    foreach ($fields as $field) {
+        if (isset($_POST[$field])) {
+            update_post_meta($post_id, $field, floatval($_POST[$field]));
+        }
+    }
+});
+
+// Register REST API route to get price history
+add_action('rest_api_init', function() {
+    register_rest_route('currency-tracker/v1', '/rates/(?P<id>\d+)', [
+        'methods' => 'GET',
+        'callback' => function($request) {
+            global $wpdb;
+            $id = (int) $request['id'];
+            $table = $wpdb->prefix . 'currency_price_history';
+            return $wpdb->get_results($wpdb->prepare("SELECT * FROM $table WHERE currency_id = %d ORDER BY recorded_at ASC", $id));
+        },
+        'permission_callback' => '__return_true',
+    ]);
+});
+
+// Shortcode to display graph
+add_shortcode('currency_graph', function($atts) {
+    $id = intval($atts['id'] ?? 0);
+    if (!$id) return 'No currency selected';
+
+    wp_enqueue_script('chartjs', 'https://cdn.jsdelivr.net/npm/chart.js', [], null, true);
+
+    $rest_url = esc_url_raw(rest_url("currency-tracker/v1/rates/$id"));
+
+    $script = <<<JS
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('$rest_url')
+            .then(res => res.json())
+            .then(data => {
+                if (!data.length) {
+                    document.getElementById('currencyChart').parentNode.innerHTML = 'No data to display';
+                    return;
+                }
+                const labels = data.map(item => new Date(item.recorded_at).toLocaleDateString());
+                const cashBuy = data.map(item => parseFloat(item.cash_buy));
+                const cashSell = data.map(item => parseFloat(item.cash_sell));
+                const transactionalBuy = data.map(item => parseFloat(item.transactional_buy));
+                const transactionalSell = data.map(item => parseFloat(item.transactional_sell));
+
+                const ctx = document.getElementById('currencyChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            { label: 'Cash Buy', data: cashBuy, borderColor: 'blue', fill: false },
+                            { label: 'Cash Sell', data: cashSell, borderColor: 'red', fill: false },
+                            { label: 'Transactional Buy', data: transactionalBuy, borderColor: 'green', fill: false },
+                            { label: 'Transactional Sell', data: transactionalSell, borderColor: 'orange', fill: false },
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        interaction: { mode: 'index', intersect: false },
+                        stacked: false,
+                        scales: { y: { beginAtZero: false }, x: { display: true } }
+                    }
+                });
+            });
+    });
+    JS;
+
+    return '<canvas id="currencyChart" height="250"></canvas><script>'.$script.'</script>';
+});
