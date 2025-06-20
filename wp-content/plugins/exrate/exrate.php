@@ -162,7 +162,6 @@ add_shortcode('currency_graph', function($atts) {
 
     return '<canvas id="currencyChart" height="250"></canvas><script>'.$script.'</script>';
 });
-
 add_shortcode('currency_table', function() {
     $args = [
         'post_type' => 'currency',
@@ -176,18 +175,20 @@ add_shortcode('currency_table', function() {
     }
 
     $output = '<table border="1" cellpadding="5" cellspacing="0">';
-    $output .= '<tr><th>Name</th><th>Cash Buy</th><th>Cash Sell</th><th>Transactional Buy</th><th>Transactional Sell</th></tr>';
+    $output .= '<tr><th>Image</th><th>Name</th><th>Cash Buy</th><th>Cash Sell</th><th>Transactional Buy</th><th>Transactional Sell</th></tr>';
 
     while ($query->have_posts()) {
         $query->the_post();
         $id = get_the_ID();
         $name = get_the_title();
+        $image = get_the_post_thumbnail($id, [50, 50], ['style' => 'max-width:50px; height:auto;']);
         $cash_buy = get_post_meta($id, 'cash_buy', true);
         $cash_sell = get_post_meta($id, 'cash_sell', true);
         $trans_buy = get_post_meta($id, 'transactional_buy', true);
         $trans_sell = get_post_meta($id, 'transactional_sell', true);
 
         $output .= "<tr>
+            <td>{$image}</td>
             <td>" . esc_html($name) . "</td>
             <td>" . esc_html($cash_buy) . "</td>
             <td>" . esc_html($cash_sell) . "</td>
