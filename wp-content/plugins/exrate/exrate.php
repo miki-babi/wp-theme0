@@ -162,3 +162,41 @@ add_shortcode('currency_graph', function($atts) {
 
     return '<canvas id="currencyChart" height="250"></canvas><script>'.$script.'</script>';
 });
+
+add_shortcode('currency_table', function() {
+    $args = [
+        'post_type' => 'currency',
+        'posts_per_page' => -1,
+        'post_status' => 'publish',
+    ];
+    $query = new WP_Query($args);
+
+    if (!$query->have_posts()) {
+        return '<p>No currencies found.</p>';
+    }
+
+    $output = '<table border="1" cellpadding="5" cellspacing="0">';
+    $output .= '<tr><th>Name</th><th>Cash Buy</th><th>Cash Sell</th><th>Transactional Buy</th><th>Transactional Sell</th></tr>';
+
+    while ($query->have_posts()) {
+        $query->the_post();
+        $id = get_the_ID();
+        $name = get_the_title();
+        $cash_buy = get_post_meta($id, 'cash_buy', true);
+        $cash_sell = get_post_meta($id, 'cash_sell', true);
+        $trans_buy = get_post_meta($id, 'transactional_buy', true);
+        $trans_sell = get_post_meta($id, 'transactional_sell', true);
+
+        $output .= "<tr>
+            <td>" . esc_html($name) . "</td>
+            <td>" . esc_html($cash_buy) . "</td>
+            <td>" . esc_html($cash_sell) . "</td>
+            <td>" . esc_html($trans_buy) . "</td>
+            <td>" . esc_html($trans_sell) . "</td>
+        </tr>";
+    }
+
+    wp_reset_postdata();
+    $output .= '</table>';
+    return $output;
+});
