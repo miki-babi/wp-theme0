@@ -163,7 +163,6 @@ add_shortcode('currency_graph', function($atts) {
     return '<canvas id="currencyChart" height="250"></canvas><script>'.$script.'</script>';
 });
 add_shortcode('currency_table', function() {
-    global $wpdb;
     $args = [
         'post_type' => 'currency',
         'posts_per_page' => -1,
@@ -175,61 +174,26 @@ add_shortcode('currency_table', function() {
         return '<p>No currencies found.</p>';
     }
 
-    $table = $wpdb->prefix . 'currency_price_history';
-
     $output = '<table border="1" cellpadding="5" cellspacing="0">';
-    $output .= '<tr>
-        <th>Image</th><th>Name</th>
-        <th>Cash Buy</th><th>Cash Buy %Δ</th>
-        <th>Cash Sell</th><th>Cash Sell %Δ</th>
-        <th>Transactional Buy</th><th>Transactional Buy %Δ</th>
-        <th>Transactional Sell</th><th>Transactional Sell %Δ</th>
-    </tr>';
+    $output .= '<tr><th>Image</th><th>Name</th><th>Cash Buy</th><th>Cash Sell</th><th>Transactional Buy</th><th>Transactional Sell</th></tr>';
 
     while ($query->have_posts()) {
         $query->the_post();
         $id = get_the_ID();
         $name = get_the_title();
         $image = get_the_post_thumbnail($id, [50, 50], ['style' => 'max-width:50px; height:auto;']);
-
-        // Get last two price history entries (latest first)
-        $history = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM $table WHERE currency_id = %d ORDER BY recorded_at DESC LIMIT 2",
-            $id
-        ));
-
-        $current = $history[0] ?? null;
-        $previous = $history[1] ?? null;
-
-        // Helper to calc % change
-        $percent_change = function($current_val, $prev_val) {
-            if ($prev_val == 0 || $prev_val === null) return '-';
-            return round((($current_val - $prev_val) / $prev_val) * 100, 2) . '%';
-        };
-
-        $cb = $current->cash_buy ?? '-';
-        $cb_change = $previous ? $percent_change($cb, $previous->cash_buy) : '-';
-
-        $cs = $current->cash_sell ?? '-';
-        $cs_change = $previous ? $percent_change($cs, $previous->cash_sell) : '-';
-
-        $tb = $current->transactional_buy ?? '-';
-        $tb_change = $previous ? $percent_change($tb, $previous->transactional_buy) : '-';
-
-        $ts = $current->transactional_sell ?? '-';
-        $ts_change = $previous ? $percent_change($ts, $previous->transactional_sell) : '-';
+        $cash_buy = get_post_meta($id, 'cash_buy', true);
+        $cash_sell = get_post_meta($id, 'cash_sell', true);
+        $trans_buy = get_post_meta($id, 'transactional_buy', true);
+        $trans_sell = get_post_meta($id, 'transactional_sell', true);
 
         $output .= "<tr>
             <td>{$image}</td>
             <td>" . esc_html($name) . "</td>
-            <td>" . esc_html($cb) . "</td>
-            <td>" . esc_html($cb_change) . "</td>
-            <td>" . esc_html($cs) . "</td>
-            <td>" . esc_html($cs_change) . "</td>
-            <td>" . esc_html($tb) . "</td>
-            <td>" . esc_html($tb_change) . "</td>
-            <td>" . esc_html($ts) . "</td>
-            <td>" . esc_html($ts_change) . "</td>
+            <td>" . esc_html($cash_buy) . "</td>
+            <td>" . esc_html($cash_sell) . "</td>
+            <td>" . esc_html($trans_buy) . "</td>
+            <td>" . esc_html($trans_sell) . "</td>
         </tr>";
     }
 
