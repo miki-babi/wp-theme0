@@ -5,7 +5,7 @@ $author    = get_the_author();
 $date      = get_the_date();
 $link      = get_permalink();
 ?>
-<div style="
+<div class="blog-card" style="
     flex: 1;
     min-width: 300px;
     background: url('<?php echo esc_url($image_url); ?>') center/cover;
