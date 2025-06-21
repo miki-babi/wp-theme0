@@ -34,3 +34,4 @@ function latest_three_blog_cards_shortcode() {
     return ob_get_clean();
 }
 add_shortcode('latest_blog_cards', 'latest_three_blog_cards_shortcode');
+
