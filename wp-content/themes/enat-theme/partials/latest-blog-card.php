@@ -14,22 +14,14 @@ $link      = get_permalink();
     border-radius: 10px;
     position: relative;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    /* height: 350px; Add a fixed height for better positioning */
+
 ">
-    <div class="blog-card-content" style="
-        background: rgba(0,0,0,0.5);
-        padding: 10px;
-        border-radius: 10px;
-        position: absolute;
-        left: 20px;
-        right: 20px;
-        bottom: 20px;
-    ">
+    <div class="blog-card-content" style="background: rgba(0,0,0,0.5); padding: 10px; border-radius: 10px;">
         <div class="blog-card-meta" style="font-size: 14px; margin-bottom: 5px;">
             <?php echo esc_html($date); ?> | by <?php echo esc_html($author); ?>
         </div>
         <h2 class="blog-card-title" style="margin: 0 0 10px;"><?php echo esc_html($title); ?></h2>
-        <a href="<?php echo esc_url($link); ?>" class="blog-card-read-more" style="
+        <a href="<?php echo esc_url($link); ?>" style="
             display: inline-block;
             padding: 8px 12px;
             background: #ff6600;
