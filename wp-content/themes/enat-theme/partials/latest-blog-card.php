@@ -37,7 +37,7 @@ $link      = get_permalink();
         </div>
         <h3 class="blog-card-title" style="margin: 0 0 10px;"><?php echo esc_html($title); ?></h3>
         <div class="blog-card-author" style="font-size: 14px; display: flex; align-items: center; gap: 5px; margin-bottom: 15px;">
-            <span style="display: inline-block; width: 16px; height: 16px; background: white; border-radius: 50%;"></span>
+            <!-- <span style="display: inline-block; width: 16px; height: 16px; background: white; border-radius: 50%; "></span> -->
             <span><?php echo esc_html($author); ?></span>
         </div>
         <a href="<?php echo esc_url($link); ?>" class="blog-card-read-more" style="
