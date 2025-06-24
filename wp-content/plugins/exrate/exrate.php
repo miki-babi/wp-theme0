@@ -229,7 +229,6 @@ add_shortcode('currency_table', function () {
               class="currency-icon"
               :class="{'selected': selected.name === currency.name}"
               @click="selected = currency" 
-              style="background-color: red;"
           >
             <img :src="currency.flag" class="selector-flag" />
             <span x-text="currency.name"></span>
