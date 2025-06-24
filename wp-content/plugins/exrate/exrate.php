@@ -298,7 +298,7 @@ add_shortcode('currency_table', function () {
         cursor: pointer;
         width: 60px;
         border: 2px solid transparent;
-        border-radius: 50%;
+        border-radius: 100%;
         padding: 5px;
         transition: all 0.2s ease;
       }
