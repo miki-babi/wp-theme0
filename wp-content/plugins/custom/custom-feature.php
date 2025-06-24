@@ -22,7 +22,7 @@ function latest_three_blog_cards_shortcode() {
 
     $query = new WP_Query($args);
     ob_start();
-    echo '<div style="display: flex; gap: 20px; flex-wrap: wrap;">';
+    echo '<div style="display: none; gap: 20px; flex-wrap: wrap;">';
 
     while ($query->have_posts()) {
         $query->the_post();
