@@ -164,90 +164,106 @@ add_shortcode('currency_graph', function($atts) {
 });
 add_shortcode('currency_table', function () {
     $args = [
-        'post_type' => 'currency',
+        'post_type'      => 'currency',
         'posts_per_page' => -1,
-        'post_status' => 'publish',
+        'post_status'    => 'publish',
     ];
-    $query = new WP_Query($args);
+    $q = new WP_Query($args);
+    if (!$q->have_posts()) return '<p>No currencies found.</p>';
 
-    if (!$query->have_posts()) {
-        return '<p>No currencies found.</p>';
-    }
+    ob_start(); ?>
 
-    ob_start();
-    ?>
     <div class="currency-widget">
         <div class="exchange-header">
             <div class="exchange-info">
                 <h3>Exchange Rate</h3>
                 <p>Stay informed with the latest exchange rates for the Ethiopian Birr (ETB). Convert your money seamlessly with competitive rates for international transactions, travel, or remittances. Our rates are updated regularly to help you make informed financial decisions.</p>
             </div>
+
             <div class="currency-display" id="currencyDisplay">
                 <?php
-                $query->the_post();
+                $q->the_post();
                 $id = get_the_ID();
-                $flag = get_the_post_thumbnail($id, [40, 40], ['class' => 'currency-flag']);
+                $data = [
+                    'name'      => get_the_title(),
+                    'rate'      => get_post_meta($id, 'rate', true),
+                    'cash_buy'  => get_post_meta($id, 'cash_buy', true),
+                    'cash_sell' => get_post_meta($id, 'cash_sell', true),
+                    'tran_buy'  => get_post_meta($id, 'transactional_buy', true),
+                    'tran_sell' => get_post_meta($id, 'transactional_sell', true),
+                    'flag'      => get_the_post_thumbnail_url($id, [60, 60]),
+                ];
                 ?>
                 <div class="currency-code">
-                    <?= $flag ?>
-                    <h2 id="currencyName"><?= esc_html(get_the_title()) ?></h2>
-                    <span class="rate" id="currencyRate"><?= esc_html(get_post_meta($id, 'rate', true)) ?></span>
+                    <img id="mainFlag" src="<?= esc_url($data['flag']) ?>" class="currency-flag"/>
+                    <h2 id="currencyName"><?= esc_html($data['name']) ?></h2>
+                    <span class="rate" id="currencyRate"><?= esc_html($data['rate']) ?></span>
                 </div>
+
                 <ul class="rate-list">
-                    <li><span>Cash Buying</span> <span id="cashBuy"><?= esc_html(get_post_meta($id, 'cash_buy', true)) ?></span></li>
-                    <li><span>Cash Selling</span> <span id="cashSell"><?= esc_html(get_post_meta($id, 'cash_sell', true)) ?></span></li>
-                    <li><span>Transactional Buying</span> <span id="transBuy"><?= esc_html(get_post_meta($id, 'transactional_buy', true)) ?></span></li>
-                    <li><span>Transactional Selling</span> <span id="transSell"><?= esc_html(get_post_meta($id, 'transactional_sell', true)) ?></span></li>
+                    <li><span>Cash Buying</span><span id="cashBuy"><?= esc_html($data['cash_buy']) ?></span></li>
+                    <li><span>Cash Selling</span><span id="cashSell"><?= esc_html($data['cash_sell']) ?></span></li>
+                    <li><span>Transactional Buying</span><span id="tranBuy"><?= esc_html($data['tran_buy']) ?></span></li>
+                    <li><span>Transactional Selling</span><span id="tranSell"><?= esc_html($data['tran_sell']) ?></span></li>
                 </ul>
             </div>
         </div>
+
         <div class="currency-selector">
             <?php
             rewind_posts();
-            while ($query->have_posts()) {
-                $query->the_post();
-                $id = get_the_ID();
-                $data = [
-                    'name' => get_the_title(),
-                    'rate' => get_post_meta($id, 'rate', true),
-                    'cash_buy' => get_post_meta($id, 'cash_buy', true),
-                    'cash_sell' => get_post_meta($id, 'cash_sell', true),
-                    'trans_buy' => get_post_meta($id, 'transactional_buy', true),
-                    'trans_sell' => get_post_meta($id, 'transactional_sell', true),
-                    'img' => get_the_post_thumbnail_url($id, [40, 40]),
+            while ($q->have_posts()):
+                $q->the_post();
+                $cid = get_the_ID();
+                $d = [
+                    'name'      => get_the_title(),
+                    'rate'      => get_post_meta($cid, 'rate', true),
+                    'cash_buy'  => get_post_meta($cid, 'cash_buy', true),
+                    'cash_sell' => get_post_meta($cid, 'cash_sell', true),
+                    'tran_buy'  => get_post_meta($cid, 'transactional_buy', true),
+                    'tran_sell' => get_post_meta($cid, 'transactional_sell', true),
+                    'flag'      => get_the_post_thumbnail_url($cid, [50, 50]),
                 ];
                 ?>
-                <div class="currency-icon" data-currency='<?= json_encode($data) ?>'>
-                    <?= get_the_post_thumbnail($id, [40, 40], ['class' => 'selector-flag']) ?>
-                    <span><?= esc_html($data['name']) ?></span>
+                <div class="currency-icon" data-currency='<?= wp_json_encode($d) ?>'>
+                    <img src="<?= esc_url($d['flag']) ?>" class="selector-flag"/>
+                    <span><?= esc_html($d['name']) ?></span>
                 </div>
-            <?php } ?>
+            <?php endwhile; ?>
         </div>
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener('DOMContentLoaded', () => {
             const icons = document.querySelectorAll('.currency-icon');
-            icons.forEach(icon => {
-                icon.addEventListener('click', function () {
-                    const data = JSON.parse(this.getAttribute('data-currency'));
-                    document.querySelector('#currencyName').innerText = data.name;
-                    document.querySelector('#currencyRate').innerText = data.rate;
-                    document.querySelector('#cashBuy').innerText = data.cash_buy;
-                    document.querySelector('#cashSell').innerText = data.cash_sell;
-                    document.querySelector('#transBuy').innerText = data.trans_buy;
-                    document.querySelector('#transSell').innerText = data.trans_sell;
-                    document.querySelector('#currencyDisplay .currency-flag').src = data.img;
-                });
-            });
+            const updField = (id, val) => document.getElementById(id).innerText = val;
+
+            icons.forEach(icon => icon.addEventListener('click', function () {
+                const d = JSON.parse(this.getAttribute('data-currency'));
+
+                updField('currencyName', d.name);
+                updField('currencyRate', d.rate);
+                updField('cashBuy', d.cash_buy);
+                updField('cashSell', d.cash_sell);
+                updField('tranBuy', d.tran_buy);
+                updField('tranSell', d.tran_sell);
+                document.getElementById('mainFlag').src = d.flag;
+
+                icons.forEach(i => i.classList.remove('selected'));
+                this.classList.add('selected');
+            }));
+
+            // Initialize first as selected
+            if (icons.length > 0) icons[0].classList.add('selected');
         });
     </script>
+
     <style>
         .currency-widget {
             border: 2px solid #0070c0;
             padding: 20px;
-            font-family: sans-serif;
-            background: #f9f9fb;
+            font-family: Arial, sans-serif;
+            background: #ffffff;
         }
 
         .exchange-header {
@@ -264,73 +280,79 @@ add_shortcode('currency_table', function () {
 
         .currency-display {
             flex: 1;
-            max-width: 50%;
+            max-width: 55%;
             border: 1px solid #ccc;
             border-radius: 12px;
             padding: 15px;
-            background: white;
             text-align: center;
         }
 
-        .currency-code {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        .currency-code img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
         }
 
         .currency-code h2 {
-            margin: 5px 0;
-            font-size: 1.5em;
+            margin: 8px 0;
+            font-size: 1.75em;
         }
 
         .currency-code .rate {
-            font-size: 2em;
-            font-weight: bold;
+            font-size: 2.5em;
             color: #002b80;
+            font-weight: bold;
         }
 
         .rate-list {
             list-style: none;
             padding: 0;
-            margin: 15px 0 0;
+            margin-top: 15px;
             text-align: left;
         }
 
         .rate-list li {
             display: flex;
             justify-content: space-between;
-            padding: 5px 0;
-            font-weight: 500;
+            padding: 6px 0;
+            font-size: 0.95em;
+            border-bottom: 1px solid #e0e0e0;
         }
 
         .currency-selector {
             display: flex;
-            justify-content: center;
             flex-wrap: wrap;
+            justify-content: center;
             gap: 15px;
             margin-top: 20px;
         }
 
         .currency-icon {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            text-align: center;
             cursor: pointer;
-            font-size: 0.9em;
-            transition: transform 0.2s;
-        }
-
-        .currency-icon:hover {
-            transform: scale(1.05);
-        }
-
-        .selector-flag, .currency-flag {
+            width: 60px;
+            border: 2px solid transparent;
             border-radius: 50%;
-            max-width: 40px;
-            height: 40px;
+            padding: 5px;
+            transition: all 0.2s ease;
+        }
+
+        .currency-icon.selected {
+            border-color: #0070c0;
+            background: #e6f0ff;
+        }
+
+        .currency-icon img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: block;
+            margin: 0 auto 5px;
         }
     </style>
+
     <?php
     wp_reset_postdata();
     return ob_get_clean();
 });
+
