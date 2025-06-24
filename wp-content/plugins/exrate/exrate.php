@@ -169,9 +169,20 @@ add_shortcode('currency_table', function () {
         'post_status'    => 'publish',
     ];
     $q = new WP_Query($args);
-    if (!$q->have_posts()) {
-        return '<p>No currencies found.</p>';
-    }
+    if (!$q->have_posts()) return '<p>No currencies found.</p>';
+
+    $first = $q->posts[0];
+    $data_id = $first->ID;
+    $data = [
+        'name'      => get_the_title($data_id),
+        'rate'      => get_post_meta($data_id, 'rate', true),
+        'cash_buy'  => get_post_meta($data_id, 'cash_buy', true),
+        'cash_sell' => get_post_meta($data_id, 'cash_sell', true),
+        'tran_buy'  => get_post_meta($data_id, 'transactional_buy', true),
+        'tran_sell' => get_post_meta($data_id, 'transactional_sell', true),
+        'flag'      => get_the_post_thumbnail_url($data_id, [60, 60]),
+    ];
+
     ob_start(); ?>
 
     <div class="currency-widget">
@@ -182,20 +193,6 @@ add_shortcode('currency_table', function () {
         </div>
 
         <div class="currency-display" id="currencyDisplay">
-          <?php
-            $q->the_post();
-            $data_id = get_the_ID();
-            $data = [
-              'name'      => get_the_title(),
-              'rate'      => get_post_meta($data_id, 'rate', true),
-              'cash_buy'  => get_post_meta($data_id, 'cash_buy', true),
-              'cash_sell' => get_post_meta($data_id, 'cash_sell', true),
-              'tran_buy'  => get_post_meta($data_id, 'transactional_buy', true),
-              'tran_sell' => get_post_meta($data_id, 'transactional_sell', true),
-              'flag'      => get_the_post_thumbnail_url($data_id, [60, 60]),
-            ];
-          ?>
-
           <div class="currency-code">
             <img id="mainFlag" src="<?= esc_url($data['flag']) ?>" class="currency-flag"/>
             <h2 id="currencyName"><?= esc_html($data['name']) ?></h2>
@@ -211,15 +208,10 @@ add_shortcode('currency_table', function () {
         </div>
       </div>
 
-      <div class="currency-navigation">
-        <button class="nav-arrow prev-arrow">&#8249;</button>
-        <div class="currency-selector">
-          <?php
-            rewind_posts();
-            while ($q->have_posts()):
-              $q->the_post();
-              $cid = get_the_ID();
-              $d = [
+      <div class="currency-selector">
+        <?php while ($q->have_posts()): $q->the_post();
+            $cid = get_the_ID();
+            $d = [
                 'name'      => get_the_title(),
                 'rate'      => get_post_meta($cid, 'rate', true),
                 'cash_buy'  => get_post_meta($cid, 'cash_buy', true),
@@ -227,22 +219,20 @@ add_shortcode('currency_table', function () {
                 'tran_buy'  => get_post_meta($cid, 'transactional_buy', true),
                 'tran_sell' => get_post_meta($cid, 'transactional_sell', true),
                 'flag'      => get_the_post_thumbnail_url($cid, [50, 50]),
-              ];
-          ?>
+            ];
+        ?>
             <div class="currency-icon" data-currency='<?= wp_json_encode($d) ?>'>
               <img src="<?= esc_url($d['flag']) ?>" class="selector-flag"/>
               <span><?= esc_html($d['name']) ?></span>
             </div>
-          <?php endwhile; ?>
-        </div>
-        <button class="nav-arrow next-arrow">&#8250;</button>
+        <?php endwhile; ?>
       </div>
     </div>
 
     <script>
       document.addEventListener('DOMContentLoaded', () => {
-        const icons     = document.querySelectorAll('.currency-icon');
-        const updField  = (id, val) => document.getElementById(id).innerText = val;
+        const icons = document.querySelectorAll('.currency-icon');
+        const updField = (id, val) => document.getElementById(id).innerText = val;
 
         icons.forEach(i => i.onclick = () => {
           const d = JSON.parse(i.getAttribute('data-currency'));
@@ -253,12 +243,12 @@ add_shortcode('currency_table', function () {
           updField('tranBuy', d.tran_buy);
           updField('tranSell', d.tran_sell);
           document.getElementById('mainFlag').src = d.flag;
+
+          icons.forEach(el => el.classList.remove('selected'));
+          i.classList.add('selected');
         });
 
-        // Carousel scroll
-        const cs = document.querySelector('.currency-selector');
-        document.querySelector('.prev-arrow').onclick = () => cs.scrollBy({ left: -120, behavior: 'smooth' });
-        document.querySelector('.next-arrow').onclick = () => cs.scrollBy({ left: 120, behavior: 'smooth' });
+        if (icons.length > 0) icons[0].classList.add('selected');
       });
     </script>
 
@@ -269,8 +259,17 @@ add_shortcode('currency_table', function () {
         font-family: Arial, sans-serif;
         background: #ffffff;
       }
-      .exchange-header { display: flex; justify-content: space-between; }
-      .exchange-info { width: 40%; }
+
+      .exchange-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+      }
+
+      .exchange-info {
+        width: 40%;
+      }
+
       .currency-display {
         width: 55%;
         border: 1px solid #ccc;
@@ -278,52 +277,69 @@ add_shortcode('currency_table', function () {
         padding: 15px;
         text-align: center;
       }
-      .currency-code img { width: 60px; height: 60px; border-radius: 50%; }
-      .currency-code h2 { margin: 8px 0; font-size: 1.75em; }
-      .currency-code .rate { font-size: 2.5em; color: #002b80; font-weight: bold; }
+
+      .currency-code img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+      }
+
+      .currency-code h2 {
+        margin: 8px 0;
+        font-size: 1.75em;
+      }
+
+      .currency-code .rate {
+        font-size: 2.5em;
+        color: #002b80;
+        font-weight: bold;
+      }
+
       .rate-list {
-        list-style: none; padding: 0; margin-top: 15px;
+        list-style: none;
+        padding: 0;
+        margin-top: 15px;
         text-align: left;
       }
+
       .rate-list li {
-        display: flex; justify-content: space-between;
+        display: flex;
+        justify-content: space-between;
         padding: 6px 0;
-        border-bottom: 1px solid #e0e0e0;
         font-size: 0.95em;
+        border-bottom: 1px solid #e0e0e0;
       }
-      .currency-navigation {
-        display: flex; align-items: center;
-        margin-top: 20px;
-      }
+
       .currency-selector {
         display: flex;
-        overflow-x: auto;
+        flex-wrap: wrap;
+        justify-content: center;
         gap: 15px;
-        scroll-behavior: smooth;
-        padding: 10px 0;
-        flex: 1;
+        margin-top: 20px;
       }
+
       .currency-icon {
-        flex: 0 0 auto;
         text-align: center;
         cursor: pointer;
         width: 60px;
+        border: 2px solid transparent;
+        border-radius: 50%;
+        padding: 5px;
+        transition: all 0.2s ease;
       }
+
+      .currency-icon.selected {
+        border-color: #0070c0;
+        background: #e6f0ff;
+      }
+
       .currency-icon img {
-        width: 50px; height: 50px;
+        width: 50px;
+        height: 50px;
         border-radius: 50%;
         display: block;
         margin: 0 auto 5px;
       }
-      .nav-arrow {
-        background: none;
-        border: none;
-        font-size: 1.75em;
-        cursor: pointer;
-        color: #0070c0;
-        padding: 0 10px;
-      }
-      .nav-arrow:focus { outline: none; }
     </style>
 
     <?php
