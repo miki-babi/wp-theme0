@@ -249,7 +249,7 @@ add_shortcode('currency_table', function () {
         width: 40%;
       }
       .currency-display {
-        width: 55%;
+        width: 100%;
         border: 1px solid #ccc;
         border-radius: 12px;
         padding: 15px;
