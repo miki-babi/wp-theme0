@@ -279,7 +279,7 @@ add_shortcode('currency_table', function () {
         display: flex;
         flex-direction: row;
         align-items: center;
-        justify-content: center;
+        justify-content: space-between;
         gap: 20px;
         width: 100%;
         border: 1px solid #ccc;
