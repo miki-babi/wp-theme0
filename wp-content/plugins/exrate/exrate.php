@@ -273,7 +273,7 @@ add_shortcode('currency_table', function () {
         gap: 20px;
       }
       .exchange-info {
-        width: 40%;
+        width: 70%;
       }
       .currency-display {
         display: flex;
