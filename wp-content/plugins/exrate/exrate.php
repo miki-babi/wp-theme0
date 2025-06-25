@@ -289,6 +289,14 @@ add_shortcode('currency_table', function () {
         background: #ffffff;
         
       }
+      .currency-code{
+        border: black 1px solid;
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
       .currency-code img {
         width: 60px;
         height: 60px;
