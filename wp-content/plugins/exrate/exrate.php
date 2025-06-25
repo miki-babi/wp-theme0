@@ -290,6 +290,10 @@ add_shortcode('currency_table', function () {
         
       }
       .currency-code{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
         border: black 1px solid;
         border-radius: 57px;
         width: 440px ;
