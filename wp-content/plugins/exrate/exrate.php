@@ -238,6 +238,7 @@ add_shortcode('currency_table', function () {
         /* max-width: 800px; */
         margin: 0 auto;
         padding: 20px;
+        border: 2px solid red;
         border-radius: 12px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       }
