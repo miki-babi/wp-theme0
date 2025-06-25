@@ -195,7 +195,7 @@ add_shortcode('currency_table', function () {
     ob_start(); ?>
 
     <div
-        class="currency-widget"
+        class="currency-widget main"
         x-data='{
             currencies: <?= json_encode($currency_array) ?>,
             selected: <?= json_encode($default) ?>
@@ -234,6 +234,13 @@ add_shortcode('currency_table', function () {
     </div>
 
     <style>
+      .main {
+        /* max-width: 800px; */
+        margin: 0 auto;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
       .currency-widget {
         border: 2px solid #0070c0;
         padding: 20px;
