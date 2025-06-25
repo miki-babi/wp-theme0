@@ -211,7 +211,7 @@ add_shortcode('currency_table', function () {
           </div>
 
           <ul class="rate-list">
-            <li><span>Cash Buying</span><span x-text="selected.cash_buy"></span></li>
+            <li class= "currency-list "><span>Cash Buying</span><span x-text="selected.cash_buy"></span></li>
             <li><span>Cash Selling</span><span x-text="selected.cash_sell"></span></li>
             <li><span>Transactional Buying</span><span x-text="selected.tran_buy"></span></li>
             <li><span>Transactional Selling</span><span x-text="selected.tran_sell"></span></li>
