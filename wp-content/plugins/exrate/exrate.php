@@ -202,11 +202,7 @@ add_shortcode('currency_table', function () {
         }'
     >
       <div class="exchange-header">
-        <div class="exchange-info">
-          <h3>Exchange Rate</h3>
-          <p>Stay informed with the latest exchange rates for the Ethiopian Birr (ETB). Convert your money seamlessly with competitive rates for international transactions, travel, or remittances. Our rates are updated regularly to help you make informed financial decisions.</p>
-        </div>
-
+        
         <div class="currency-display">
           <div class="currency-code">
             <img :src="selected.flag" class="currency-flag"/>
