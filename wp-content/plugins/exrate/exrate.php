@@ -211,10 +211,10 @@ add_shortcode('currency_table', function () {
           </div>
 
           <ul class="rate-list">
-            <li class= "currency-list "><span>Cash Buying</span><span x-text="selected.cash_buy"></span></li>
-            <li><span>Cash Selling</span><span x-text="selected.cash_sell"></span></li>
-            <li><span>Transactional Buying</span><span x-text="selected.tran_buy"></span></li>
-            <li><span>Transactional Selling</span><span x-text="selected.tran_sell"></span></li>
+            <li class= "currency-list "><span >Cash Buying</span><span x-text="selected.cash_buy" class="currency-span"></span></li>
+            <li class= "currency-list "><span>Cash Selling</span><span x-text="selected.cash_sell" class="currency-span"></span></li>
+            <li class= "currency-list "><span>Transactional Buying</span><span x-text="selected.tran_buy" class="currency-span"></span></li>
+            <li class= "currency-list "><span>Transactional Selling</span><span x-text="selected.tran_sell" class="currency-span"></span></li>
           </ul>
         </div>
       </div>
@@ -239,11 +239,17 @@ add_shortcode('currency_table', function () {
 
       .currency-list{
         font-family: Manrope;
-font-weight: 400;
-font-size: 20px;
-line-height: 26px;
-letter-spacing: 0px;
-
+        font-weight: 400;
+        font-size: 20px;
+        line-height: 26px;
+        letter-spacing: 0px;
+      }
+      .currency-span{
+        font-family: Manrope;
+        font-weight: 800;
+        font-size: 20px;
+        line-height: 26px;
+        letter-spacing: 0px;
       }
       .main {
         max-width: 100%;
