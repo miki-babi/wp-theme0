@@ -234,6 +234,17 @@ add_shortcode('currency_table', function () {
     </div>
 
     <style>
+      
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
+
+      .currency-list{
+        font-family: Manrope;
+font-weight: 400;
+font-size: 20px;
+line-height: 26px;
+letter-spacing: 0px;
+
+      }
       .main {
         max-width: 100%;
         margin: 0 auto;
