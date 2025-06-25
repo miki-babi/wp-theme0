@@ -291,11 +291,9 @@ add_shortcode('currency_table', function () {
       }
       .currency-code{
         border: black 1px solid;
-        border-radius: 12px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+        border-radius: 57px;
+        width: 440px ;
+        height: 330px;
       }
       .currency-code img {
         width: 60px;
