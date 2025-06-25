@@ -300,9 +300,9 @@ add_shortcode('currency_table', function () {
         height: 330px;
       }
       .currency-code img {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
+        width: 65px;
+        height: 65px;
+        /* border-radius: 50%; */
       }
       .currency-code h2 {
         font-family: Inter;
