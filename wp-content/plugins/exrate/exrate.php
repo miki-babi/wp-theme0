@@ -257,13 +257,14 @@ add_shortcode('currency_table', function () {
         margin: 0 auto;
         padding: 20px;
         /* border: 2px solid red; */
-        border-radius: 12px;
+
+        border-radius: 40px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       }
       .currency-widget {
         /* border: 2px solid #0070c0; */
         
-        padding: 20px;
+        padding: 40px;
         font-family: Arial, sans-serif;
         background: #EAECF2;
       }
