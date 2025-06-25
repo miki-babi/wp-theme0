@@ -276,12 +276,16 @@ add_shortcode('currency_table', function () {
         width: 40%;
       }
       .currency-display {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         width: 100%;
         border: 1px solid #ccc;
         border-radius: 12px;
         padding: 15px;
         text-align: center;
         background: #ffffff;
+        
       }
       .currency-code img {
         width: 60px;
