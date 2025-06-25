@@ -277,7 +277,7 @@ add_shortcode('currency_table', function () {
       }
       .currency-display {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
         width: 100%;
         border: 1px solid #ccc;
