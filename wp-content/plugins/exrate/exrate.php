@@ -270,7 +270,7 @@ add_shortcode('currency_table', function () {
       }
       .exchange-header {
         display: flex;
-        justify-content: space-between;
+        /* justify-content: space-between; */
         gap: 20px;
       }
       .exchange-info {
