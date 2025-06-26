@@ -240,7 +240,8 @@ add_shortcode('currency_table', function () {
 
       .currency-list{
         display: flex;
-        justify-content: space-between;
+        /* justify-content: space-between; */
+        gap: 20px ;
         font-family: Manrope;
         font-weight: 400;
         font-size: 20px;
