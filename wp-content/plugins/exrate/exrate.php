@@ -295,7 +295,7 @@ add_shortcode('currency_table', function () {
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
-        gap: 60px;
+        /* gap: 60px; */
         width: 100%;
         /* border: 1px solid #ccc; */
         /* border-radius: 12px; */
