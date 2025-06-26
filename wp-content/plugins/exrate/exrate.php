@@ -239,6 +239,8 @@ add_shortcode('currency_table', function () {
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Manrope:wght@200..800&display=swap');
 
       .currency-list{
+        display: flex;
+        justify-content: space-between;
         font-family: Manrope;
         font-weight: 400;
         font-size: 20px;
@@ -333,7 +335,7 @@ text-align: center;
         /* justify-content: space-between; */
         padding: 6px 0;
         font-size: 0.95em;
-        border-bottom: 1px solid #e0e0e0;
+        /* border-bottom: 1px solid #e0e0e0; */
       }
       .currency-selector {
         display: flex;
