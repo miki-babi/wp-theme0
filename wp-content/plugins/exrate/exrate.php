@@ -251,7 +251,7 @@ add_shortcode('currency_table', function () {
         flex-direction: row;
         align-items: center;
         gap: 20px;
-        /* justify-content: space-between; */
+        justify-content: space-between;
         /* gap: 20px ; */
         font-family: Manrope;
         font-weight: 400;
