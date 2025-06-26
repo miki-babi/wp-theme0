@@ -330,7 +330,7 @@ text-align: center;
       }
       .rate-list li {
         display: flex;
-        justify-content: space-between;
+        /* justify-content: space-between; */
         padding: 6px 0;
         font-size: 0.95em;
         border-bottom: 1px solid #e0e0e0;
