@@ -251,7 +251,7 @@ add_shortcode('currency_table', function () {
         flex-direction: row;
         align-items: center;
         gap: 20px;
-        justify-content: space-between;
+        /* justify-content: space-between; */
         /* gap: 20px ; */
         font-family: Manrope;
         font-weight: 400;
@@ -295,8 +295,8 @@ add_shortcode('currency_table', function () {
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
-        gap: 60px;
-        width: 100%;
+        /* gap: 60px; */
+        /* width: 100%; */
         /* border: 1px solid #ccc; */
         /* border-radius: 12px; */
         padding: 15px;
