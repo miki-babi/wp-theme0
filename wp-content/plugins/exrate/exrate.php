@@ -211,10 +211,18 @@ add_shortcode('currency_table', function () {
           </div>
           <div class="exchange-info">
             <ul class="rate-list">
-              <li class= "currency-list "><span >Cash Buying</span><span x-text="selected.cash_buy" class="currency-span"></span></li>
-              <li class= "currency-list "><span>Cash Selling</span><span x-text="selected.cash_sell" class="currency-span"></span></li>
-              <li class= "currency-list "><span>Transactional Buying</span><span x-text="selected.tran_buy" class="currency-span"></span></li>
-              <li class= "currency-list "><span>Transactional Selling</span><span x-text="selected.tran_sell" class="currency-span"></span></li>
+              <li class= "currency-list ">
+                <span >Cash Buying</span><span x-text="selected.cash_buy" class="currency-span"></span>
+              </li>
+              <li class= "currency-list ">
+                <span>Cash Selling</span><span x-text="selected.cash_sell" class="currency-span"></span>
+              </li>
+              <li class= "currency-list ">
+                <span>Transactional Buying</span><span x-text="selected.tran_buy" class="currency-span"></span>
+              </li>
+              <li class= "currency-list ">
+                <span>Transactional Selling</span><span x-text="selected.tran_sell" class="currency-span"></span>
+              </li>
             </ul>
           </div>
         </div>
@@ -240,8 +248,11 @@ add_shortcode('currency_table', function () {
 
       .currency-list{
         display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 20px;
         /* justify-content: space-between; */
-        gap: 20px ;
+        /* gap: 20px ; */
         font-family: Manrope;
         font-weight: 400;
         font-size: 20px;
