@@ -294,11 +294,11 @@ add_shortcode('currency_table', function () {
         display: flex;
         flex-direction: row;
         align-items: center;
-        justify-content: center;
+        justify-content: space-between;
         gap: 60px;
         width: 100%;
-        border: 1px solid #ccc;
-        border-radius: 12px;
+        /* border: 1px solid #ccc; */
+        /* border-radius: 12px; */
         padding: 15px;
         text-align: center;
         background: #ffffff;
@@ -322,11 +322,11 @@ add_shortcode('currency_table', function () {
       }
       .currency-code h2 {
         font-family: Inter;
-font-weight: 700;
-font-size: 57.63px;
-line-height: 100%;
-letter-spacing: 0px;
-text-align: center;
+        font-weight: 700;
+        font-size: 57.63px;
+        line-height: 100%;
+        letter-spacing: 0px;
+        text-align: center;
 
         /* margin: 8px 0;
         font-size: 1.75em; */
