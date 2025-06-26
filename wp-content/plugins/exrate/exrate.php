@@ -266,7 +266,7 @@ add_shortcode('currency_table', function () {
         
         padding: 40px;
         font-family: Arial, sans-serif;
-        background: #EAECF2;
+        /* background: #EAECF2; */
       }
       .exchange-header {
         display: flex;
