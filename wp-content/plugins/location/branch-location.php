@@ -90,7 +90,7 @@ add_shortcode('atm_list', function () {
                     const lat = el.dataset.lat;
                     const lng = el.dataset.lng;
                     const mapDiv = document.getElementById('atm-map-content');
-                    mapDiv.innerHTML = `<iframe width="100%" height="300" frameborder="0" style="border:0" loading="lazy" allowfullscreen src="https://maps.google.com/maps?q=${lat},${lng}&hl=es&z=14&amp;output=embed"></iframe>`;
+                    mapDiv.innerHTML = `<iframe width="100%" height="300" frameborder="0" style="border:0" loading="lazy" allowfullscreen src="https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=14&amp;output=embed"></iframe>`;
                 });
             });
 
