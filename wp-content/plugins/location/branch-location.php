@@ -6,9 +6,8 @@ Version: 1.0.0
 Author: Mikiyas Shiferaw
 Author URI: https://t.me/mikiyas_sh
 */
-if (!defined('ABSPATH')) exit;
 
-// if (!defined('ABSPATH')) exit;
+if (!defined('ABSPATH')) exit;
 
 // 1. Register Custom Post Type for ATM
 add_action('init', function () {
@@ -30,9 +29,12 @@ add_action('init', function () {
 // 2. Add Meta Boxes for Latitude, Longitude, and Iframe
 add_action('add_meta_boxes', function () {
     add_meta_box('atm_location_meta', 'ATM Details', function ($post) {
+        wp_nonce_field('atm_location_nonce_action', 'atm_location_nonce_field');
+
         $lat = get_post_meta($post->ID, '_atm_latitude', true);
         $lng = get_post_meta($post->ID, '_atm_longitude', true);
         $iframe = get_post_meta($post->ID, '_atm_iframe', true);
+
         echo '<label>Latitude:<br><input type="text" name="atm_latitude" value="' . esc_attr($lat) . '" style="width:100%"></label><br><br>';
         echo '<label>Longitude:<br><input type="text" name="atm_longitude" value="' . esc_attr($lng) . '" style="width:100%"></label><br><br>';
         echo '<label>Google Maps Iframe:<br><textarea name="atm_iframe" rows="5" style="width:100%">' . esc_textarea($iframe) . '</textarea></label>';
@@ -41,10 +43,15 @@ add_action('add_meta_boxes', function () {
 
 add_action('save_post_atm_location', function ($post_id) {
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (!isset($_POST['atm_location_nonce_field']) || !wp_verify_nonce($_POST['atm_location_nonce_field'], 'atm_location_nonce_action')) return;
+    if (!current_user_can('edit_post', $post_id)) return;
+
     if (isset($_POST['atm_latitude']))
         update_post_meta($post_id, '_atm_latitude', sanitize_text_field($_POST['atm_latitude']));
+
     if (isset($_POST['atm_longitude']))
         update_post_meta($post_id, '_atm_longitude', sanitize_text_field($_POST['atm_longitude']));
+
     if (isset($_POST['atm_iframe']))
         update_post_meta($post_id, '_atm_iframe', wp_kses_post($_POST['atm_iframe']));
 });
@@ -74,7 +81,7 @@ add_shortcode('atm_list', function () {
     echo '  </ul>
             </div>
             <div id="atm-map-view" style="flex: 1 1 55%; max-width: 55%;">
-                <div id="atm-map-content">' . $first_iframe . '</div>
+                <div id="atm-map-content">' . htmlspecialchars_decode($first_iframe) . '</div>
             </div>
         </div>';
 
@@ -124,7 +131,7 @@ add_shortcode('atm_list', function () {
     <div style="display:none">
         <?php foreach ($atms as $atm):
             $iframe = get_post_meta($atm->ID, '_atm_iframe', true); ?>
-            <div id="map-original-<?php echo $atm->ID; ?>"><?php echo $iframe; ?></div>
+            <div id="map-original-<?php echo $atm->ID; ?>"><?php echo htmlspecialchars_decode($iframe); ?></div>
         <?php endforeach; ?>
     </div>
     <?php
