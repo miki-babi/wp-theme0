@@ -23,7 +23,6 @@ add_action('init', function () {
         'show_in_menu' => true,
         'menu_icon' => 'dashicons-location',
         'supports' => ['title'],
-        'taxonomies' => ['category']
     ]);
 });
 
@@ -51,39 +50,27 @@ add_action('save_post_atm_location', function ($post_id) {
     if (isset($_POST['atm_longitude']))
         update_post_meta($post_id, '_atm_longitude', sanitize_text_field($_POST['atm_longitude']));
 });
-add_action('wp_enqueue_scripts', function () {
-    wp_enqueue_script('alpinejs', 'https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js', [], null, true);
-});
+
 
 // Frontend Shortcode Output Markup
 add_shortcode('atm_list', function () {
     ob_start();
     $args = ['post_type' => 'atm_location', 'posts_per_page' => -1];
     $atms = get_posts($args);
-    $categories = get_categories(['taxonomy' => 'category', 'hide_empty' => false]);
 
     if (empty($atms)) return '<p>No ATM locations found.</p>';
 
     ?>
     <div id="atm-locator" x-data="atmLocator()" class="flex flex-wrap gap-4">
         <div class="w-full md:w-2/5">
-            <select x-model="selectedCategory" class="mb-4 w-full border px-4 py-2">
-                <option value="">All Categories</option>
-                <?php foreach ($categories as $cat): ?>
-                    <option value="<?php echo esc_attr($cat->slug); ?>"><?php echo esc_html($cat->name); ?></option>
-                <?php endforeach; ?>
-            </select>
-
             <button @click="findNearest" class="mb-4 px-4 py-2 bg-blue-500 text-white">Find Nearest ATM</button>
             <ul class="space-y-2">
                 <?php foreach ($atms as $atm): 
                     $lat = get_post_meta($atm->ID, '_atm_latitude', true);
                     $lng = get_post_meta($atm->ID, '_atm_longitude', true);
                     $title = esc_html($atm->post_title);
-                    $terms = wp_get_post_terms($atm->ID, 'category', ['fields' => 'slugs']);
-                    $cat_class = implode(' ', $terms);
                 ?>
-                    <li x-show="selectedCategory === '' || '<?php echo $cat_class; ?>'.includes(selectedCategory)">
+                    <li>
                         <button @click="selectAtm('<?php echo esc_js($lat); ?>','<?php echo esc_js($lng); ?>')" class="w-full text-left px-4 py-2 border"><?php echo $title; ?></button>
                     </li>
                 <?php endforeach; ?>
@@ -100,7 +87,6 @@ add_shortcode('atm_list', function () {
         function atmLocator() {
             return {
                 iframeSrc: "https://maps.google.com/maps?q=<?php echo get_post_meta($atms[0]->ID, '_atm_latitude', true); ?>,<?php echo get_post_meta($atms[0]->ID, '_atm_longitude', true); ?>&hl=en&z=14&output=embed",
-                selectedCategory: '',
                 selectAtm(lat, lng) {
                     this.iframeSrc = `https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=14&output=embed`;
                 },
