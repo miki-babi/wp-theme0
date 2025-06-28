@@ -51,6 +51,9 @@ add_action('save_post_atm_location', function ($post_id) {
     if (isset($_POST['atm_longitude']))
         update_post_meta($post_id, '_atm_longitude', sanitize_text_field($_POST['atm_longitude']));
 });
+add_action('wp_enqueue_scripts', function () {
+    wp_enqueue_script('alpinejs', 'https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js', [], null, true);
+});
 
 // Frontend Shortcode Output Markup
 add_shortcode('atm_list', function () {
