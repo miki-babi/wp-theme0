@@ -84,6 +84,18 @@ add_shortcode('atm_list', function () {
 
     ?>
     <script>
+        function haversine(lat1, lon1, lat2, lon2) {
+            function toRad(x) { return x * Math.PI / 180; }
+            const R = 6371; // km
+            const dLat = toRad(lat2 - lat1);
+            const dLon = toRad(lon2 - lon1);
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('.atm-item').forEach(function (el) {
                 el.addEventListener('click', function () {
@@ -108,16 +120,19 @@ add_shortcode('atm_list', function () {
                             const lat = parseFloat(el.dataset.lat);
                             const lng = parseFloat(el.dataset.lng);
                             if (!isNaN(lat) && !isNaN(lng)) {
-                                const d = Math.sqrt(Math.pow(userLat - lat, 2) + Math.pow(userLng - lng, 2));
-                                if (d < nearestDist) {
-                                    nearestDist = d;
+                                const dist = haversine(userLat, userLng, lat, lng);
+                                if (dist < nearestDist) {
+                                    nearestDist = dist;
                                     nearest = el;
                                 }
                             }
                         });
 
                         if (nearest) {
-                            nearest.click();
+                            const lat = nearest.dataset.lat;
+                            const lng = nearest.dataset.lng;
+                            const mapDiv = document.getElementById('atm-map-content');
+                            mapDiv.innerHTML = `<iframe width="100%" height="300" frameborder="0" style="border:0" loading="lazy" allowfullscreen src="https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=14&amp;output=embed"></iframe>`;
                             nearest.scrollIntoView({ behavior: 'smooth' });
                         } else {
                             alert('No nearby ATM found.');
