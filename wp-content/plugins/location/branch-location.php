@@ -8,6 +8,8 @@ Author URI: https://t.me/mikiyas_sh
 */
 if (!defined('ABSPATH')) exit;
 
+// if (!defined('ABSPATH')) exit;
+
 // 1. Register Custom Post Type for ATM
 add_action('init', function () {
     register_post_type('atm_location', [
@@ -53,26 +55,38 @@ add_shortcode('atm_list', function () {
     $args = ['post_type' => 'atm_location', 'posts_per_page' => -1];
     $atms = get_posts($args);
 
-    echo '<div id="atm-list">
-        <button id="find-nearest">Find Nearest ATM</button>
-        <ul>';
+    if (empty($atms)) return '<p>No ATM locations found.</p>';
+
+    $first_atm = $atms[0];
+    $first_iframe = get_post_meta($first_atm->ID, '_atm_iframe', true);
+
+    echo '<div id="atm-container" style="display: flex; flex-wrap: wrap; gap: 20px;">
+            <div id="atm-list" style="flex: 1 1 40%; max-width: 40%;">
+                <button id="find-nearest">Find Nearest ATM</button>
+                <ul style="padding-left: 0;">';
 
     foreach ($atms as $atm) {
         $lat = get_post_meta($atm->ID, '_atm_latitude', true);
         $lng = get_post_meta($atm->ID, '_atm_longitude', true);
-        $iframe = get_post_meta($atm->ID, '_atm_iframe', true);
-        echo '<li data-lat="' . esc_attr($lat) . '" data-lng="' . esc_attr($lng) . '" data-id="' . $atm->ID . '" class="atm-item">' . esc_html($atm->post_title) . '</li>';
-        echo '<div id="map-' . $atm->ID . '" class="atm-map" style="display:none">' . $iframe . '</div>';
+        echo '<li data-lat="' . esc_attr($lat) . '" data-lng="' . esc_attr($lng) . '" data-id="' . $atm->ID . '" class="atm-item" style="list-style:none; cursor:pointer; padding:5px; border:1px solid #ccc; margin-bottom:5px;">' . esc_html($atm->post_title) . '</li>';
     }
 
-    echo '</ul></div>';
+    echo '  </ul>
+            </div>
+            <div id="atm-map-view" style="flex: 1 1 55%; max-width: 55%;">
+                <div id="atm-map-content">' . $first_iframe . '</div>
+            </div>
+        </div>';
+
     ?>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('.atm-item').forEach(function (el) {
                 el.addEventListener('click', function () {
-                    document.querySelectorAll('.atm-map').forEach(map => map.style.display = 'none');
-                    document.getElementById('map-' + el.dataset.id).style.display = 'block';
+                    const atmId = el.dataset.id;
+                    const mapDiv = document.getElementById('atm-map-content');
+                    const original = document.querySelector('#map-original-' + atmId);
+                    if (original) mapDiv.innerHTML = original.innerHTML;
                 });
             });
 
@@ -106,11 +120,13 @@ add_shortcode('atm_list', function () {
             });
         });
     </script>
-    <style>
-        #atm-list ul { list-style: none; padding: 0; }
-        #atm-list li { cursor: pointer; padding: 8px; background: #f9f9f9; margin: 5px 0; border: 1px solid #ccc; }
-        .atm-map { margin: 10px 0; }
-    </style>
+
+    <div style="display:none">
+        <?php foreach ($atms as $atm):
+            $iframe = get_post_meta($atm->ID, '_atm_iframe', true); ?>
+            <div id="map-original-<?php echo $atm->ID; ?>"><?php echo $iframe; ?></div>
+        <?php endforeach; ?>
+    </div>
     <?php
     return ob_get_clean();
 });
