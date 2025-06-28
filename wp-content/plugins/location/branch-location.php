@@ -90,7 +90,7 @@ add_shortcode('atm_list', function () {
                     const lat = el.dataset.lat;
                     const lng = el.dataset.lng;
                     const mapDiv = document.getElementById('atm-map-content');
-                    mapDiv.innerHTML = `<iframe width="100%" height="300" frameborder="0" style="border:0" loading="lazy" allowfullscreen src="https://maps.google.com/maps?q=${lat},${lng}&hl=es&z=14&amp;output=embed"></iframe>`;
+                    mapDiv.innerHTML = `<iframe width="100%" height="300" frameborder="0" style="border:0" loading="lazy" allowfullscreen src="https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=14&amp;output=embed"></iframe>`;
                 });
             });
 
@@ -99,6 +99,7 @@ add_shortcode('atm_list', function () {
                     navigator.geolocation.getCurrentPosition(function (position) {
                         const userLat = position.coords.latitude;
                         const userLng = position.coords.longitude;
+                        console.log("User location:", userLat, userLng);
 
                         let nearest = null;
                         let nearestDist = Infinity;
@@ -106,17 +107,24 @@ add_shortcode('atm_list', function () {
                         document.querySelectorAll('.atm-item').forEach(el => {
                             const lat = parseFloat(el.dataset.lat);
                             const lng = parseFloat(el.dataset.lng);
-                            const d = Math.sqrt(Math.pow(userLat - lat, 2) + Math.pow(userLng - lng, 2));
-                            if (d < nearestDist) {
-                                nearestDist = d;
-                                nearest = el;
+                            if (!isNaN(lat) && !isNaN(lng)) {
+                                const d = Math.sqrt(Math.pow(userLat - lat, 2) + Math.pow(userLng - lng, 2));
+                                if (d < nearestDist) {
+                                    nearestDist = d;
+                                    nearest = el;
+                                }
                             }
                         });
 
                         if (nearest) {
                             nearest.click();
                             nearest.scrollIntoView({ behavior: 'smooth' });
+                        } else {
+                            alert('No nearby ATM found.');
                         }
+                    }, function (error) {
+                        console.error('Geolocation error:', error);
+                        alert('Could not get your location.');
                     });
                 } else {
                     alert('Geolocation is not supported by your browser');
