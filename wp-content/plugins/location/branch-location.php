@@ -26,18 +26,16 @@ add_action('init', function () {
     ]);
 });
 
-// 2. Add Meta Boxes for Latitude, Longitude, and Iframe
+// 2. Add Meta Boxes for Latitude and Longitude
 add_action('add_meta_boxes', function () {
     add_meta_box('atm_location_meta', 'ATM Details', function ($post) {
         wp_nonce_field('atm_location_nonce_action', 'atm_location_nonce_field');
 
         $lat = get_post_meta($post->ID, '_atm_latitude', true);
         $lng = get_post_meta($post->ID, '_atm_longitude', true);
-        $iframe = get_post_meta($post->ID, '_atm_iframe', true);
 
         echo '<label>Latitude:<br><input type="text" name="atm_latitude" value="' . esc_attr($lat) . '" style="width:100%"></label><br><br>';
         echo '<label>Longitude:<br><input type="text" name="atm_longitude" value="' . esc_attr($lng) . '" style="width:100%"></label><br><br>';
-        echo '<label>Google Maps Iframe:<br><textarea name="atm_iframe" rows="5" style="width:100%">' . esc_textarea($iframe) . '</textarea></label>';
     }, 'atm_location', 'normal', 'high');
 });
 
@@ -51,9 +49,6 @@ add_action('save_post_atm_location', function ($post_id) {
 
     if (isset($_POST['atm_longitude']))
         update_post_meta($post_id, '_atm_longitude', sanitize_text_field($_POST['atm_longitude']));
-
-    if (isset($_POST['atm_iframe']))
-        update_post_meta($post_id, '_atm_iframe', wp_kses_post($_POST['atm_iframe']));
 });
 
 // 3. Frontend Shortcode
@@ -65,7 +60,9 @@ add_shortcode('atm_list', function () {
     if (empty($atms)) return '<p>No ATM locations found.</p>';
 
     $first_atm = $atms[0];
-    $first_iframe = get_post_meta($first_atm->ID, '_atm_iframe', true);
+    $first_lat = get_post_meta($first_atm->ID, '_atm_latitude', true);
+    $first_lng = get_post_meta($first_atm->ID, '_atm_longitude', true);
+    $first_iframe = "<iframe width=\"100%\" height=\"300\" frameborder=\"0\" style=\"border:0\" loading=\"lazy\" allowfullscreen src=\"https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q={$first_lat},{$first_lng}\"></iframe>";
 
     echo '<div id="atm-container" style="display: flex; flex-wrap: wrap; gap: 20px;">
             <div id="atm-list" style="flex: 1 1 40%; max-width: 40%;">
@@ -81,7 +78,7 @@ add_shortcode('atm_list', function () {
     echo '  </ul>
             </div>
             <div id="atm-map-view" style="flex: 1 1 55%; max-width: 55%;">
-                <div id="atm-map-content">' . htmlspecialchars_decode($first_iframe) . '</div>
+                <div id="atm-map-content">' . $first_iframe . '</div>
             </div>
         </div>';
 
@@ -90,10 +87,10 @@ add_shortcode('atm_list', function () {
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('.atm-item').forEach(function (el) {
                 el.addEventListener('click', function () {
-                    const atmId = el.dataset.id;
+                    const lat = el.dataset.lat;
+                    const lng = el.dataset.lng;
                     const mapDiv = document.getElementById('atm-map-content');
-                    const original = document.querySelector('#map-original-' + atmId);
-                    if (original) mapDiv.innerHTML = original.innerHTML;
+                    mapDiv.innerHTML = `<iframe width="100%" height="300" frameborder="0" style="border:0" loading="lazy" allowfullscreen src="https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=${lat},${lng}"></iframe>`;
                 });
             });
 
@@ -127,13 +124,6 @@ add_shortcode('atm_list', function () {
             });
         });
     </script>
-
-    <div style="display:none">
-        <?php foreach ($atms as $atm):
-            $iframe = get_post_meta($atm->ID, '_atm_iframe', true); ?>
-            <div id="map-original-<?php echo $atm->ID; ?>"><?php echo htmlspecialchars_decode($iframe); ?></div>
-        <?php endforeach; ?>
-    </div>
     <?php
     return ob_get_clean();
 });
