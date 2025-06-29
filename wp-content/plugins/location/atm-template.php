@@ -76,12 +76,21 @@ $first_iframe = "<iframe src=\"https://maps.google.com/maps?q={$first_lat},{$fir
         border-radius: 0.5rem;
         background-color: #f9f9f9;
         transition: all 0.3s ease;
+        user-select: none;
     }
 
     .atm-item:hover {
         background-color: #e6f2ff;
         border-color: #0073e6;
         transform: translateY(-2px);
+    }
+
+    /* Red highlight for the last clicked item */
+    .atm-item.active {
+        background-color: #ffcccc;
+        border-color: #ff0000;
+        color: #900000;
+        font-weight: bold;
     }
 
     .nearest-atm {
@@ -151,6 +160,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     atmItems.forEach(function (el) {
         el.addEventListener('click', function () {
+            // Remove 'active' class from all items first
+            atmItems.forEach(item => item.classList.remove('active'));
+
+            // Add 'active' class to the clicked item
+            el.classList.add('active');
+
+            // Change the map iframe
             const lat = el.dataset.lat;
             const lng = el.dataset.lng;
             if (mapDiv) {
