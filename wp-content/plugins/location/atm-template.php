@@ -87,7 +87,7 @@ $first_iframe = "<iframe src=\"https://maps.google.com/maps?q={$first_lat},{$fir
 
     /* Red highlight for the last clicked item */
     .atm-item.active {
-        background-color: #ffcccc;
+        background-color:rgb(245, 0, 0);
         border-color: #ff0000;
         color: #900000;
         font-weight: bold;
