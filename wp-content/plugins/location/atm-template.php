@@ -116,67 +116,78 @@ function haversine(lat1, lon1, lat2, lon2) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.atm-item').forEach(function (el) {
+    // Safe binding: ATM list click handler
+    const atmItems = document.querySelectorAll('.atm-item');
+    atmItems.forEach(function (el) {
         el.addEventListener('click', function () {
             const lat = el.dataset.lat;
             const lng = el.dataset.lng;
             const mapDiv = document.getElementById('atm-map-content');
-            mapDiv.innerHTML = `<iframe src="https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=14&amp;output=embed" loading="lazy" allowfullscreen></iframe>`;
+            if (mapDiv) {
+                mapDiv.innerHTML = `<iframe src="https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=14&amp;output=embed" loading="lazy" allowfullscreen></iframe>`;
+            }
         });
     });
 
-    document.getElementById('find-nearest').addEventListener('click', function () {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function (position) {
-                const userLat = position.coords.latitude;
-                const userLng = position.coords.longitude;
+    // Safe binding: Find nearest button
+    const findBtn = document.getElementById('find-nearest');
+    if (findBtn) {
+        findBtn.addEventListener('click', function () {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    const userLat = position.coords.latitude;
+                    const userLng = position.coords.longitude;
+                    console.log("[DEBUG] User location:", userLat, userLng);
 
-                console.log("[DEBUG] User location:", userLat, userLng);
+                    let nearest = null;
+                    let nearestDist = Infinity;
 
-                let nearest = null;
-                let nearestDist = Infinity;
+                    atmItems.forEach(el => {
+                        const lat = parseFloat(el.dataset.lat);
+                        const lng = parseFloat(el.dataset.lng);
+                        const dist = haversine(userLat, userLng, lat, lng);
 
-                document.querySelectorAll('.atm-item').forEach(el => {
-                    const lat = parseFloat(el.dataset.lat);
-                    const lng = parseFloat(el.dataset.lng);
-                    const dist = haversine(userLat, userLng, lat, lng);
+                        console.log(`[DEBUG] ATM "${el.textContent.trim()}" at [${lat}, ${lng}] is ${dist.toFixed(2)} km away`);
 
-                    console.log(`[DEBUG] ATM "${el.textContent.trim()}" at [${lat}, ${lng}] is ${dist.toFixed(2)} km away`);
+                        el.classList.remove("nearest-atm");
 
-                    // Remove old highlights
-                    el.classList.remove("nearest-atm");
+                        if (dist < nearestDist) {
+                            nearestDist = dist;
+                            nearest = el;
+                        }
+                    });
 
-                    if (dist < nearestDist) {
-                        nearestDist = dist;
-                        nearest = el;
+                    if (nearest) {
+                        const lat = nearest.dataset.lat;
+                        const lng = nearest.dataset.lng;
+                        const mapDiv = document.getElementById('atm-map-content');
+                        if (mapDiv) {
+                            mapDiv.innerHTML = `<iframe src="https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=14&amp;output=embed" loading="lazy" allowfullscreen></iframe>`;
+                        }
+
+                        nearest.classList.add("nearest-atm");
+
+                        if (!nearest.innerHTML.includes("km")) {
+                            nearest.innerHTML += ` <span style="font-size: 0.85rem; color: #666;">(${nearestDist.toFixed(2)} km)</span>`;
+                        }
+
+                        nearest.scrollIntoView({ behavior: 'smooth' });
+
+                        console.log(`[DEBUG] Nearest ATM: "${nearest.textContent.trim()}" - ${nearestDist.toFixed(2)} km`);
+                    } else {
+                        alert('No nearby ATM found.');
+                        console.warn("[DEBUG] No ATM matched");
                     }
+                }, function (error) {
+                    console.error("[DEBUG] Geolocation error:", error.message);
+                    alert('Could not get your location: ' + error.message);
                 });
-
-                if (nearest) {
-                    const lat = nearest.dataset.lat;
-                    const lng = nearest.dataset.lng;
-                    const mapDiv = document.getElementById('atm-map-content');
-
-                    mapDiv.innerHTML = `<iframe src="https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=14&amp;output=embed" loading="lazy" allowfullscreen></iframe>`;
-
-                    nearest.classList.add("nearest-atm");
-
-                    nearest.innerHTML += ` <span style="font-size: 0.85rem; color: #666;">(${nearestDist.toFixed(2)} km)</span>`;
-
-                    nearest.scrollIntoView({ behavior: 'smooth' });
-
-                    console.log(`[DEBUG] Nearest ATM: "${nearest.textContent.trim()}" - ${nearestDist.toFixed(2)} km`);
-                } else {
-                    alert('No nearby ATM found.');
-                    console.warn("[DEBUG] No ATM matched");
-                }
-            }, function (error) {
-                console.error("[DEBUG] Geolocation error:", error.message);
-                alert('Could not get your location: ' + error.message);
-            });
-        } else {
-            alert('Geolocation is not supported by your browser');
-        }
-    });
+            } else {
+                alert('Geolocation is not supported by your browser');
+            }
+        });
+    } else {
+        console.warn("[DEBUG] Button with id 'find-nearest' not found");
+    }
 });
 </script>
