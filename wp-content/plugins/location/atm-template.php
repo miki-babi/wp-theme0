@@ -6,44 +6,48 @@ $first_iframe = "<iframe src=\"https://maps.google.com/maps?q={$first_lat},{$fir
 ?>
 
 <style>
+    * {
+        box-sizing: border-box;
+    }
+
     body {
         margin: 0;
         padding: 0;
-        box-sizing: border-box;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        height: 100vh;
-        overflow: hidden;
     }
 
     #atm-container {
         display: flex;
+        gap: 1rem;
+        padding: 1rem;
+        flex-wrap: wrap;
+    }
+
+    #atm-list {
+        flex: 1 1 500px;
+        max-width: 600px;
         height: 100vh;
-        overflow: hidden;
+        overflow-y: auto;
+        padding: 1rem;
+        background-color: #fff;
+        border: 1px solid #eee;
+        border-radius: 8px;
     }
 
     #atm-map-view {
-        position: fixed;
-        right: 0;
-        top: 0;
-        width: 60%;
-        height: 100vh;
-        z-index: 1;
-        background-color: #f1f1f1;
+        flex: 0 0 400px;
+        height: 300px;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+        border: 1px solid #ddd;
+        background-color: white;
     }
 
     #atm-map-content iframe {
         width: 100%;
         height: 100%;
         border: none;
-    }
-
-    #atm-list {
-        width: 40%;
-        height: 100vh;
-        overflow-y: auto;
-        padding: 1rem;
-        background-color: #ffffff;
-        z-index: 2;
     }
 
     #find-nearest {
@@ -72,7 +76,6 @@ $first_iframe = "<iframe src=\"https://maps.google.com/maps?q={$first_lat},{$fir
         border-radius: 0.5rem;
         background-color: #f9f9f9;
         transition: all 0.3s ease;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
     }
 
     .atm-item:hover {
@@ -93,14 +96,12 @@ $first_iframe = "<iframe src=\"https://maps.google.com/maps?q={$first_lat},{$fir
         }
 
         #atm-map-view {
-            position: static;
             width: 100%;
-            height: 40vh;
         }
 
         #atm-list {
             width: 100%;
-            height: 60vh;
+            height: auto;
         }
     }
 </style>
@@ -168,7 +169,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 navigator.geolocation.getCurrentPosition(function (position) {
                     const userLat = position.coords.latitude;
                     const userLng = position.coords.longitude;
-                    alert(`✅ Step 3: Got your location!\nLatitude: ${userLat}\nLongitude: ${userLng}`);
+                    alert(`✅ Got your location!\nLat: ${userLat}\nLng: ${userLng}`);
 
                     let nearest = null;
                     let nearestDist = Infinity;
@@ -178,8 +179,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         const lng = parseFloat(el.dataset.lng);
                         const dist = haversine(userLat, userLng, lat, lng);
 
-                        alert(`📡 Checking ATM "${el.textContent.trim()}"\nLat: ${lat}, Lng: ${lng}\nDistance: ${dist.toFixed(8)} km`);
-
+                        alert(`📡 Checking "${el.textContent.trim()}"\nDistance: ${dist.toFixed(8)} km`);
                         el.classList.remove("nearest-atm");
 
                         if (dist < nearestDist) {
@@ -192,12 +192,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         const lat = nearest.dataset.lat;
                         const lng = nearest.dataset.lng;
 
-                        if (mapDiv) {
-                            mapDiv.innerHTML = `<iframe src="https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=14&amp;output=embed" loading="lazy" allowfullscreen></iframe>`;
-                        }
+                        mapDiv.innerHTML = `<iframe src="https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=14&amp;output=embed" loading="lazy" allowfullscreen></iframe>`;
 
                         nearest.classList.add("nearest-atm");
-
                         if (!nearest.innerHTML.includes("km")) {
                             nearest.innerHTML += ` <span style="font-size: 0.85rem; color: #666;">(${nearestDist.toFixed(10)} km)</span>`;
                         }
@@ -216,8 +213,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 alert('🚫 Geolocation is not supported by your browser');
             }
         });
-    } else {
-        alert("❗ ERROR: 'Find Nearest ATM' button not found");
     }
 });
 </script>
