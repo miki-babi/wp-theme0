@@ -1,31 +1,49 @@
 <?php
+$first_atm = $atms[0];
+$first_lat = get_post_meta($first_atm->ID, '_atm_latitude', true);
+$first_lng = get_post_meta($first_atm->ID, '_atm_longitude', true);
 $first_iframe = "<iframe src=\"https://maps.google.com/maps?q={$first_lat},{$first_lng}&hl=en&z=14&amp;output=embed\" loading=\"lazy\" allowfullscreen></iframe>";
 ?>
 
 <style>
+    body {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        height: 100vh;
+        overflow: hidden;
+    }
+
     #atm-container {
         display: flex;
-        flex-wrap: wrap;
-        gap: 2rem;
-        padding: 1rem;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    #atm-map-view {
+        position: fixed;
+        right: 0;
+        top: 0;
+        width: 60%;
+        height: 100vh;
+        z-index: 1;
+        background-color: #f1f1f1;
+    }
+
+    #atm-map-content iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
     }
 
     #atm-list {
-        flex: 1 1 100%;
-        max-width: 100%;
-    }
-
-    @media (min-width: 768px) {
-        #atm-list {
-            flex: 1 1 40%;
-            max-width: 40%;
-        }
-
-        #atm-map-view {
-            flex: 1 1 55%;
-            max-width: 55%;
-        }
+        width: 40%;
+        height: 100vh;
+        overflow-y: auto;
+        padding: 1rem;
+        background-color: #ffffff;
+        z-index: 2;
     }
 
     #find-nearest {
@@ -69,16 +87,21 @@ $first_iframe = "<iframe src=\"https://maps.google.com/maps?q={$first_lat},{$fir
         font-weight: bold;
     }
 
-    #atm-map-content iframe {
-        border-radius: 0.75rem;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        height: 300px;
-    }
+    @media (max-width: 768px) {
+        #atm-container {
+            flex-direction: column;
+        }
 
-    #atm-map-view {
-        flex: 1 1 100%;
-        max-width: 100%;
+        #atm-map-view {
+            position: static;
+            width: 100%;
+            height: 40vh;
+        }
+
+        #atm-list {
+            width: 100%;
+            height: 60vh;
+        }
     }
 </style>
 
@@ -97,6 +120,7 @@ $first_iframe = "<iframe src=\"https://maps.google.com/maps?q={$first_lat},{$fir
             <?php endforeach; ?>
         </ul>
     </div>
+
     <div id="atm-map-view">
         <div id="atm-map-content"><?= $first_iframe ?></div>
     </div>
@@ -104,7 +128,7 @@ $first_iframe = "<iframe src=\"https://maps.google.com/maps?q={$first_lat},{$fir
 
 <script>
 function haversine(lat1, lon1, lat2, lon2) {
-    const R = 6371.0088; // Earth's radius in kilometers
+    const R = 6371.0088;
     const toRad = angle => angle * Math.PI / 180;
 
     const dLat = toRad(lat2 - lat1);
@@ -116,7 +140,7 @@ function haversine(lat1, lon1, lat2, lon2) {
               Math.cos(lat1Rad) * Math.cos(lat2Rad) *
               Math.sin(dLon / 2) * Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c; // distance in KM
+    return R * c;
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -173,6 +197,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
 
                         nearest.classList.add("nearest-atm");
+
                         if (!nearest.innerHTML.includes("km")) {
                             nearest.innerHTML += ` <span style="font-size: 0.85rem; color: #666;">(${nearestDist.toFixed(10)} km)</span>`;
                         }
