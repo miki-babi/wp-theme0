@@ -1,6 +1,79 @@
 <?php
 $first_iframe = "<iframe width=\"100%\" height=\"300\" frameborder=\"0\" style=\"border:0\" loading=\"lazy\" allowfullscreen src=\"https://maps.google.com/maps?q={$first_lat},{$first_lng}&hl=en&z=14&amp;output=embed\"></iframe>";
 ?>
+<style>
+    #atm-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        padding: 1rem;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    #atm-list {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+
+    @media (min-width: 768px) {
+        #atm-list {
+            flex: 1 1 40%;
+            max-width: 40%;
+        }
+
+        #atm-map-view {
+            flex: 1 1 55%;
+            max-width: 55%;
+        }
+    }
+
+    #find-nearest {
+        display: inline-block;
+        padding: 0.75rem 1.25rem;
+        margin-bottom: 1rem;
+        background-color: #0073e6;
+        color: #fff;
+        font-size: 1rem;
+        border: none;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    #find-nearest:hover {
+        background-color: #005bb5;
+    }
+
+    .atm-item {
+        list-style: none;
+        cursor: pointer;
+        padding: 0.75rem 1rem;
+        border: 1px solid #e0e0e0;
+        margin-bottom: 0.5rem;
+        border-radius: 0.5rem;
+        background-color: #f9f9f9;
+        transition: all 0.3s ease;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+
+    .atm-item:hover {
+        background-color: #e6f2ff;
+        border-color: #0073e6;
+        transform: translateY(-2px);
+    }
+
+    #atm-map-content iframe {
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        height: 300px;
+    }
+
+    #atm-map-view {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+</style>
 
 <div id="atm-container" style="display: flex; flex-wrap: wrap; gap: 20px;">
     <div id="atm-list" style="flex: 1 1 40%; max-width: 40%;">
