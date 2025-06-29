@@ -88,8 +88,8 @@ $first_iframe = "<iframe src=\"https://maps.google.com/maps?q={$first_lat},{$fir
         <ul>
             <?php foreach ($atms as $atm): ?>
                 <?php
-                    $lat = get_post_meta($atm->ID, '_atm_latitude', true);
-                    $lng = get_post_meta($atm->ID, '_atm_longitude', true);
+                    $lat = floatval(get_post_meta($atm->ID, '_atm_latitude', true));
+                    $lng = floatval(get_post_meta($atm->ID, '_atm_longitude', true));
                 ?>
                 <li data-lat="<?= esc_attr($lat) ?>" data-lng="<?= esc_attr($lng) ?>" data-id="<?= $atm->ID ?>" class="atm-item">
                     <?= esc_html($atm->post_title) ?>
@@ -104,40 +104,47 @@ $first_iframe = "<iframe src=\"https://maps.google.com/maps?q={$first_lat},{$fir
 
 <script>
 function haversine(lat1, lon1, lat2, lon2) {
-    function toRad(x) { return x * Math.PI / 180; }
-    const R = 6371;
+    const R = 6371.0088; // Earth's radius in kilometers
+    const toRad = angle => angle * Math.PI / 180;
+
     const dLat = toRad(lat2 - lat1);
     const dLon = toRad(lon2 - lon1);
+    const lat1Rad = toRad(lat1);
+    const lat2Rad = toRad(lat2);
+
     const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-              Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+              Math.cos(lat1Rad) * Math.cos(lat2Rad) *
               Math.sin(dLon / 2) * Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
+    return R * c; // distance in KM
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    // Safe binding: ATM list click handler
     const atmItems = document.querySelectorAll('.atm-item');
+    const findBtn = document.getElementById('find-nearest');
+    const mapDiv = document.getElementById('atm-map-content');
+
     atmItems.forEach(function (el) {
         el.addEventListener('click', function () {
             const lat = el.dataset.lat;
             const lng = el.dataset.lng;
-            const mapDiv = document.getElementById('atm-map-content');
             if (mapDiv) {
                 mapDiv.innerHTML = `<iframe src="https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=14&amp;output=embed" loading="lazy" allowfullscreen></iframe>`;
             }
         });
     });
 
-    // Safe binding: Find nearest button
-    const findBtn = document.getElementById('find-nearest');
     if (findBtn) {
         findBtn.addEventListener('click', function () {
+            alert("🔍 Step 1: Starting to find nearest ATM...");
+
             if (navigator.geolocation) {
+                alert("📍 Step 2: Asking for your location...");
+
                 navigator.geolocation.getCurrentPosition(function (position) {
                     const userLat = position.coords.latitude;
                     const userLng = position.coords.longitude;
-                    console.log("[DEBUG] User location:", userLat, userLng);
+                    alert(`✅ Step 3: Got your location!\nLatitude: ${userLat}\nLongitude: ${userLng}`);
 
                     let nearest = null;
                     let nearestDist = Infinity;
@@ -147,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         const lng = parseFloat(el.dataset.lng);
                         const dist = haversine(userLat, userLng, lat, lng);
 
-                        console.log(`[DEBUG] ATM "${el.textContent.trim()}" at [${lat}, ${lng}] is ${dist.toFixed(2)} km away`);
+                        alert(`📡 Checking ATM "${el.textContent.trim()}"\nLat: ${lat}, Lng: ${lng}\nDistance: ${dist.toFixed(8)} km`);
 
                         el.classList.remove("nearest-atm");
 
@@ -160,34 +167,32 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (nearest) {
                         const lat = nearest.dataset.lat;
                         const lng = nearest.dataset.lng;
-                        const mapDiv = document.getElementById('atm-map-content');
+
                         if (mapDiv) {
                             mapDiv.innerHTML = `<iframe src="https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=14&amp;output=embed" loading="lazy" allowfullscreen></iframe>`;
                         }
 
                         nearest.classList.add("nearest-atm");
-
                         if (!nearest.innerHTML.includes("km")) {
-                            nearest.innerHTML += ` <span style="font-size: 0.85rem; color: #666;">(${nearestDist.toFixed(2)} km)</span>`;
+                            nearest.innerHTML += ` <span style="font-size: 0.85rem; color: #666;">(${nearestDist.toFixed(10)} km)</span>`;
                         }
 
                         nearest.scrollIntoView({ behavior: 'smooth' });
 
-                        console.log(`[DEBUG] Nearest ATM: "${nearest.textContent.trim()}" - ${nearestDist.toFixed(2)} km`);
+                        alert(`🎯 Nearest ATM is "${nearest.textContent.trim()}"\nDistance: ${nearestDist.toFixed(10)} km`);
                     } else {
-                        alert('No nearby ATM found.');
-                        console.warn("[DEBUG] No ATM matched");
+                        alert('❌ No nearby ATM found.');
                     }
+
                 }, function (error) {
-                    console.error("[DEBUG] Geolocation error:", error.message);
-                    alert('Could not get your location: ' + error.message);
+                    alert('⚠️ Geolocation error: ' + error.message);
                 });
             } else {
-                alert('Geolocation is not supported by your browser');
+                alert('🚫 Geolocation is not supported by your browser');
             }
         });
     } else {
-        console.warn("[DEBUG] Button with id 'find-nearest' not found");
+        alert("❗ ERROR: 'Find Nearest ATM' button not found");
     }
 });
 </script>
