@@ -1,6 +1,7 @@
 <?php
-$first_iframe = "<iframe width=\"100%\" height=\"300\" frameborder=\"0\" style=\"border:0\" loading=\"lazy\" allowfullscreen src=\"https://maps.google.com/maps?q={$first_lat},{$first_lng}&hl=en&z=14&amp;output=embed\"></iframe>";
+$first_iframe = "<iframe src=\"https://maps.google.com/maps?q={$first_lat},{$first_lng}&hl=en&z=14&amp;output=embed\" loading=\"lazy\" allowfullscreen></iframe>";
 ?>
+
 <style>
     #atm-container {
         display: flex;
@@ -62,6 +63,12 @@ $first_iframe = "<iframe width=\"100%\" height=\"300\" frameborder=\"0\" style=\
         transform: translateY(-2px);
     }
 
+    .nearest-atm {
+        background-color: #dff0d8 !important;
+        border: 2px solid #28a745 !important;
+        font-weight: bold;
+    }
+
     #atm-map-content iframe {
         border-radius: 0.75rem;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -75,22 +82,22 @@ $first_iframe = "<iframe width=\"100%\" height=\"300\" frameborder=\"0\" style=\
     }
 </style>
 
-<div id="atm-container" style="display: flex; flex-wrap: wrap; gap: 20px;">
-    <div id="atm-list" style="flex: 1 1 40%; max-width: 40%;">
+<div id="atm-container">
+    <div id="atm-list">
         <button id="find-nearest">Find Nearest ATM</button>
-        <ul style="padding-left: 0;">
+        <ul>
             <?php foreach ($atms as $atm): ?>
                 <?php
                     $lat = get_post_meta($atm->ID, '_atm_latitude', true);
                     $lng = get_post_meta($atm->ID, '_atm_longitude', true);
                 ?>
-                <li data-lat="<?= esc_attr($lat) ?>" data-lng="<?= esc_attr($lng) ?>" data-id="<?= $atm->ID ?>" class="atm-item" style="list-style:none; cursor:pointer; padding:5px; border:1px solid #ccc; margin-bottom:5px;">
+                <li data-lat="<?= esc_attr($lat) ?>" data-lng="<?= esc_attr($lng) ?>" data-id="<?= $atm->ID ?>" class="atm-item">
                     <?= esc_html($atm->post_title) ?>
                 </li>
             <?php endforeach; ?>
         </ul>
     </div>
-    <div id="atm-map-view" style="flex: 1 1 55%; max-width: 55%;">
+    <div id="atm-map-view">
         <div id="atm-map-content"><?= $first_iframe ?></div>
     </div>
 </div>
@@ -114,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const lat = el.dataset.lat;
             const lng = el.dataset.lng;
             const mapDiv = document.getElementById('atm-map-content');
-            mapDiv.innerHTML = `<iframe width="100%" height="300" frameborder="0" style="border:0" loading="lazy" allowfullscreen src="https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=14&amp;output=embed"></iframe>`;
+            mapDiv.innerHTML = `<iframe src="https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=14&amp;output=embed" loading="lazy" allowfullscreen></iframe>`;
         });
     });
 
@@ -124,18 +131,24 @@ document.addEventListener('DOMContentLoaded', function () {
                 const userLat = position.coords.latitude;
                 const userLng = position.coords.longitude;
 
+                console.log("[DEBUG] User location:", userLat, userLng);
+
                 let nearest = null;
                 let nearestDist = Infinity;
 
                 document.querySelectorAll('.atm-item').forEach(el => {
                     const lat = parseFloat(el.dataset.lat);
                     const lng = parseFloat(el.dataset.lng);
-                    if (!isNaN(lat) && !isNaN(lng)) {
-                        const dist = haversine(userLat, userLng, lat, lng);
-                        if (dist < nearestDist) {
-                            nearestDist = dist;
-                            nearest = el;
-                        }
+                    const dist = haversine(userLat, userLng, lat, lng);
+
+                    console.log(`[DEBUG] ATM "${el.textContent.trim()}" at [${lat}, ${lng}] is ${dist.toFixed(2)} km away`);
+
+                    // Remove old highlights
+                    el.classList.remove("nearest-atm");
+
+                    if (dist < nearestDist) {
+                        nearestDist = dist;
+                        nearest = el;
                     }
                 });
 
@@ -143,13 +156,23 @@ document.addEventListener('DOMContentLoaded', function () {
                     const lat = nearest.dataset.lat;
                     const lng = nearest.dataset.lng;
                     const mapDiv = document.getElementById('atm-map-content');
-                    mapDiv.innerHTML = `<iframe width="100%" height="300" frameborder="0" style="border:0" loading="lazy" allowfullscreen src="https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=14&amp;output=embed"></iframe>`;
+
+                    mapDiv.innerHTML = `<iframe src="https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=14&amp;output=embed" loading="lazy" allowfullscreen></iframe>`;
+
+                    nearest.classList.add("nearest-atm");
+
+                    nearest.innerHTML += ` <span style="font-size: 0.85rem; color: #666;">(${nearestDist.toFixed(2)} km)</span>`;
+
                     nearest.scrollIntoView({ behavior: 'smooth' });
+
+                    console.log(`[DEBUG] Nearest ATM: "${nearest.textContent.trim()}" - ${nearestDist.toFixed(2)} km`);
                 } else {
                     alert('No nearby ATM found.');
+                    console.warn("[DEBUG] No ATM matched");
                 }
             }, function (error) {
-                alert('Could not get your location.');
+                console.error("[DEBUG] Geolocation error:", error.message);
+                alert('Could not get your location: ' + error.message);
             });
         } else {
             alert('Geolocation is not supported by your browser');
