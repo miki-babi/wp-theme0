@@ -36,7 +36,7 @@ body {
 
 #atm-map-view {
     flex: 2;
-    min-width: 200px;
+    min-width: 300px;
     min-height: 500px;
     height: 100vh;
     border-radius: 12px;
