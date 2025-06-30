@@ -57,6 +57,9 @@ body {
     border: 1px solid #ddd;
     margin-bottom: 12px;
     border-radius: 6px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s ease;
+    color: black;
 }
 
 .atm-item {
