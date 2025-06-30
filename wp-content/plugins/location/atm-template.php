@@ -117,7 +117,7 @@ $first_iframe = "<iframe src=\"https://maps.google.com/maps?q={$first_lat},{$fir
 
 <div id="atm-container">
     <div id="atm-list">
-        <button id="find-nearest">Find Nearest ATM</button>
+        <!-- <button id="find-nearest">Find Nearest ATM</button> -->
         <ul>
             <?php foreach ($atms as $atm): ?>
                 <?php
