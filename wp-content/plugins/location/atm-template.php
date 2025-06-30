@@ -35,8 +35,10 @@ body {
 }
 
 #atm-map-view {
-    flex: 0 0 400px;
-    height: 100%;
+    flex: 2;
+    min-width: 400px;
+    min-height: 500px;
+    height: 100vh;
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
@@ -75,7 +77,7 @@ body {
 }
 
 .atm-item:hover {
-    background-color:rgb(2, 253, 15);
+    background-color: rgb(2, 253, 15);
     border-color: #0073e6;
     transform: translateY(-2px);
 }
@@ -94,6 +96,7 @@ body {
 
     #atm-map-view {
         width: 100%;
+        height: 300px;
     }
 
     #atm-list {
@@ -102,6 +105,7 @@ body {
     }
 }
 </style>
+
 
 <div id="atm-container">
     <div id="atm-list">
