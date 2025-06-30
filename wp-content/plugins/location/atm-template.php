@@ -46,6 +46,10 @@ body {
     background-color: white;
 }
 
+#atm-map-content {
+    height: 100%; /* Fix: make sure this has height */
+}
+
 #atm-map-content iframe {
     width: 100% !important;
     height: 100% !important;
@@ -100,13 +104,16 @@ body {
         height: 300px;
     }
 
+    #atm-map-content {
+        height: 300px;
+    }
+
     #atm-list {
         width: 100%;
         height: auto;
     }
 }
 </style>
-
 
 <div id="atm-container">
     <div id="atm-list">
@@ -137,28 +144,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
     atmItems.forEach(function (el) {
         el.addEventListener('click', function () {
-            // Remove 'active' class from all
             atmItems.forEach(item => item.classList.remove('active'));
-            // Add to clicked one
             el.classList.add('active');
 
-            // Update the map
             const lat = el.dataset.lat;
             const lng = el.dataset.lng;
             mapDiv.innerHTML = `<iframe src="https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=14&amp;output=embed" loading="lazy" allowfullscreen></iframe>`;
         });
     });
 
-    // Filter the list
     searchInput.addEventListener('keyup', function () {
         const filter = searchInput.value.toUpperCase();
         atmItems.forEach(function (item) {
             const text = item.textContent || item.innerText;
-            if (text.toUpperCase().indexOf(filter) > -1) {
-                item.style.display = '';
-            } else {
-                item.style.display = 'none';
-            }
+            item.style.display = text.toUpperCase().indexOf(filter) > -1 ? '' : 'none';
         });
     });
 });
