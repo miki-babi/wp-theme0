@@ -101,11 +101,11 @@ body {
 
     #atm-map-view {
         width: 100%;
-        height: 300px;
+        height: 500px;
     }
 
     #atm-map-content {
-        height: 300px;
+        height: 500px;
     }
 
     #atm-list {
