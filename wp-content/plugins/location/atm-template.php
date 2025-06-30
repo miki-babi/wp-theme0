@@ -2,7 +2,7 @@
 $first_atm = $atms[0];
 $first_lat = get_post_meta($first_atm->ID, '_atm_latitude', true);
 $first_lng = get_post_meta($first_atm->ID, '_atm_longitude', true);
-$first_iframe = "<iframe src=\"https://maps.google.com/maps?q={$first_lat},{$first_lng}&hl=en&z=14&amp;output=embed\" loading=\"lazy\" allowfullscreen></iframe>";
+$first_iframe = "<iframe width='100%' height='100%' src=\"https://maps.google.com/maps?q={$first_lat},{$first_lng}&hl=en&z=14&amp;output=embed\" loading=\"lazy\" allowfullscreen></iframe>";
 ?>
 
 <style>
