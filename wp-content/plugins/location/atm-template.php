@@ -75,7 +75,7 @@ body {
 }
 
 .atm-item:hover {
-    background-color: #e6f2ff;
+    background-color:rgb(2, 253, 15);
     border-color: #0073e6;
     transform: translateY(-2px);
 }
